@@ -10,45 +10,30 @@ class StartupBloc extends BlocBase {
   final Repository _repository;
   final CurrentUserService _currentUserService;
   final ScreenBuilderService _screenBuilderService;
-
-//  final LoginScreenBuilder _loginScreen;
-//  final RequestScreenBuilder _requestScreen;
-
   Future<bool> isRepoInit;
   BuildContext context;
-
   final _log = FimberLog("FLU_CHAT");
 
   StartupBloc(
       {@required Repository repository,
       @required CurrentUserService currentUserService,
-      @required ScreenBuilderService screenBuilderService
-//      @required loginScreen,
-//      @required requestScreen
-      })
+      @required ScreenBuilderService screenBuilderService})
       : this._repository = repository,
         this._currentUserService = currentUserService,
-        this._screenBuilderService = screenBuilderService
-//        this._loginScreen = loginScreen,
-//        this._requestScreen = requestScreen
-  {
+        this._screenBuilderService = screenBuilderService {
     _log.d("StartupBloc create start");
     isRepoInit = _repository.isInitialized;
     _log.d("StartupBloc create end");
   }
 
   void gotoNextScreen() {
-    var currentUser = _currentUserService.getCurrentUser();
     var nextScreen;
-
+    var currentUser = _currentUserService.getCurrentUser();
     if (currentUser == null) {
-      nextScreen =
-          _screenBuilderService.getLoginScreenBuilder(); //_loginScreen;
+      nextScreen = _screenBuilderService.getLoginScreenBuilder();
     } else {
-      nextScreen =
-          _screenBuilderService.getRequestScreenBuilder(); //_requestScreen;
+      nextScreen = _screenBuilderService.getRequestScreenBuilder();
     }
-
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) => nextScreen()));
   }

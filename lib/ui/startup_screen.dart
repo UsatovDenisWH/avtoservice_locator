@@ -53,12 +53,6 @@ class _StartupScreenState extends State<StartupScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data) {
                 Future.microtask(() => _bloc.gotoNextScreen());
-//            return Text("Next screen");
-//            Future.microtask(() => Navigator.pushReplacement(
-//                context,
-//                MaterialPageRoute(
-//                    builder: (BuildContext context) =>
-//                        _bloc.getNextScreen())));
               }
               return Column(
                 mainAxisSize: MainAxisSize.min,

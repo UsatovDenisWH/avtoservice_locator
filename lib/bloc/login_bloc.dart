@@ -9,7 +9,6 @@ import 'package:flutter_fimber/flutter_fimber.dart';
 class LoginBloc extends BlocBase {
   final CurrentUserService _currentUserService;
   final ScreenBuilderService _screenBuilderService;
-  User currentUser;
   BuildContext context;
 
   final _log = FimberLog("FLU_CHAT");
@@ -19,33 +18,18 @@ class LoginBloc extends BlocBase {
       @required ScreenBuilderService screenBuilderService})
       : this._currentUserService = currentUserService,
         this._screenBuilderService = screenBuilderService {
-    currentUser = _currentUserService.getCurrentUser();
     _log.d("LoginBloc create");
   }
 
-//  bool loginUser(
-//      {@required String firstName, String lastName, String password}) {
-//    // TODO add check username, password
-//    if (_currentUser == null ||
-//        _currentUser.firstName != firstName ||
-//        _currentUser.lastName != lastName) {
-//      _repository.setCurrentUser(
-//          user: User(firstName: firstName, lastName: lastName));
-//      _currentUser = _repository.getCurrentUser();
-//    }
-//    return true;
-//  }
-
-//  BlocProvider<BlocBase> getNextScreen() {
-//    var injector = DiContainer.getInjector();
-//
-//    BlocProvider<ChatListBloc> chatScreen =
-//        (injector.get<ChatListScreenBuilder>())();
-//    BlocProvider<LoginBloc> loginScreen =
-//        (injector.get<LoginScreenBuilder>())();
-//
-//    return chatScreen;
-//  }
+  void loginUser({@required String phoneNumber}) async {
+    var newUser = User(phoneNumber: phoneNumber);
+    var result = await _currentUserService.setCurrentUser(newUser: newUser);
+    if (result) {
+      var nextScreen = _screenBuilderService.getRequestScreenBuilder();
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => nextScreen()));
+    }
+  }
 
   @override
   void dispose() {

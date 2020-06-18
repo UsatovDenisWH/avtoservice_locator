@@ -17,23 +17,10 @@ class CurrentUserService {
 
   Future<bool> initialize() async {
     _log.d("CurrentUserService initialize() start");
-
-    var phoneNumber;
-    try {
-      phoneNumber = await _loadUserPhoneFromSPrefs();
-    } on Exception catch (error, stackTrace) {
-      _handleException(error, stackTrace);
-    }
-
+    var phoneNumber = await _loadUserPhoneFromSPrefs();
     if (phoneNumber != null) {
-      try {
-        _currentUser =
-            await _dataSource.getUserByPhone(phoneNumber: phoneNumber);
-      } on Exception catch (error, stackTrace) {
-        _handleException(error, stackTrace);
-      }
+      _currentUser = await _dataSource.getUserByPhone(phoneNumber: phoneNumber);
     }
-
     _log.d("CurrentUserService initialize() end");
     return true;
   }
@@ -47,38 +34,57 @@ class CurrentUserService {
     assert(newUser.phoneNumber != null);
     _log.d("CurrentUserService setCurrentUser()");
 
-    _currentUser = newUser;
+    var oldCurrentUser = _currentUser;
 
-    var result = false;
-    try {
-      result = await _dataSource.updateUser(user: newUser);
-    } on Exception catch (error, stackTrace) {
-      _handleException(error, stackTrace);
-    }
-
-    if (newUser.phoneNumber != _currentUser.phoneNumber) {
-      try {
-        result = await _saveUserPhoneToSPrefs(phoneNumber: newUser.phoneNumber);
-      } on Exception catch (error, stackTrace) {
-        _handleException(error, stackTrace);
+    // first login OR change user
+    if (_currentUser == null ||
+        _currentUser.phoneNumber != newUser.phoneNumber) {
+      _currentUser =
+          await _dataSource.getUserByPhone(phoneNumber: newUser.phoneNumber);
+      if (_currentUser == null) {
+        // new user not found in DataSource
+        _currentUser = newUser;
       }
+      // save new user to SPrefs
+      await _saveUserPhoneToSPrefs(phoneNumber: _currentUser.phoneNumber);
+    } else {
+      // update current user
+      _currentUser = newUser;
     }
 
+    // save new currentUser to DataSource
+    var result = await _dataSource.updateUser(user: _currentUser);
+    if (!result) {
+      // rollback currentUser
+      _currentUser = oldCurrentUser;
+      await _saveUserPhoneToSPrefs(phoneNumber: _currentUser.phoneNumber);
+    }
     return result;
   }
 
   Future<String> _loadUserPhoneFromSPrefs() async {
     _log.d("CurrentUserService _loadUserPhoneFromSPrefs() start");
-    final prefs = await SharedPreferences.getInstance();
-    String phoneNumber = prefs.getString(_CURRENT_USER_PHONE);
+    var prefs;
+    var phoneNumber;
+    try {
+      prefs = await SharedPreferences.getInstance();
+      phoneNumber = prefs.getString(_CURRENT_USER_PHONE);
+    } on Exception catch (error, stackTrace) {
+      _handleException(error, stackTrace);
+    }
     _log.d("CurrentUserService _loadUserPhoneFromSPrefs() end");
     return phoneNumber;
   }
 
   Future<bool> _saveUserPhoneToSPrefs({@required String phoneNumber}) async {
     _log.d("CurrentUserService _saveUserPhoneToSPrefs() start");
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_CURRENT_USER_PHONE, phoneNumber);
+    var prefs;
+    try {
+      prefs = await SharedPreferences.getInstance();
+      prefs.setString(_CURRENT_USER_PHONE, phoneNumber);
+    } on Exception catch (error, stackTrace) {
+      _handleException(error, stackTrace);
+    }
     _log.d("CurrentUserService _saveUserPhoneToSPrefs() end");
     return true;
   }

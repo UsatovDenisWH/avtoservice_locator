@@ -54,8 +54,6 @@ class DiContainer {
               repository: i.get<Repository>(),
               currentUserService: i.get<CurrentUserService>(),
               screenBuilderService: i.get<ScreenBuilderService>(),
-//                  loginScreen: i.get<LoginScreenBuilder>(),
-//                  requestScreen: i.get<RequestScreenBuilder>()),
             )),
         isSingleton: true);
 

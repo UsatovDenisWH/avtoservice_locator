@@ -1,9 +1,7 @@
-
-
 import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
 import 'package:avtoservicelocator/bloc/login_bloc.dart';
-import 'package:avtoservicelocator/model/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,119 +10,106 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginBloc _bloc;
-  User _currentUser;
+  bool _isLoginButtonDisabled;
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   void initState() {
     super.initState();
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
-    _currentUser = _bloc.currentUser;
+    _isLoginButtonDisabled = true;
+    _phoneNumberController.addListener(_onChangePhoneNumberField);
+//    _phoneNumberController.text = "";
   }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController firstNameController = TextEditingController();
-    TextEditingController lastNameController = TextEditingController();
-//    firstNameController.text = _currentUser?.firstName ?? "";
-//    lastNameController.text = _currentUser?.lastName ?? "";
-
     return Scaffold(
         body: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0.0, 1.0],
-                  colors: [Colors.redAccent, Colors.yellowAccent],
-                ),
-              ),
+      fit: StackFit.expand,
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 1.0],
+              colors: [Colors.redAccent, Colors.yellowAccent],
             ),
-            Column(
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 1,
-                      child: SizedBox.shrink(),
-                    ),
-                    Flexible(
-                      flex: 8,
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "*First name",
-                            labelText: "*First name"),
-                        controller: firstNameController,
-                        textInputAction: TextInputAction.next,
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: SizedBox.shrink(),
-                    ),
-                  ],
+                Flexible(
+                  flex: 1,
+                  child: SizedBox.shrink(),
                 ),
-                SizedBox(height: 24.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 1,
-                      child: SizedBox.shrink(),
+                Flexible(
+                  flex: 6,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Номер телефона",
+                      hintText: "Номер телефона",
+                      prefixIcon: Icon(Icons.phone_android),
+                      prefixText: "+7 ",
                     ),
-                    Flexible(
-                      flex: 8,
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Last name",
-                            labelText: "Last name"),
-                        controller: lastNameController,
-                        textInputAction: TextInputAction.next,
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: SizedBox.shrink(),
-                    ),
-                  ],
+                    controller: _phoneNumberController,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10)
+                    ],
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: _submitCredential,
+                  ),
                 ),
-                SizedBox(height: 24.0),
-                RaisedButton(
-                  color: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      side: BorderSide(color: Colors.white)),
-                  onPressed: () {
-                    _submitCredential(firstNameController.text.toString(),
-                        lastNameController.text.toString());
-                  },
-                  child: Text("Login",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.normal)),
-                )
+                Flexible(
+                  flex: 1,
+                  child: SizedBox.shrink(),
+                ),
               ],
+            ),
+            SizedBox(height: 24.0),
+            OutlineButton(
+              borderSide: _isLoginButtonDisabled
+                  ? BorderSide(color: Colors.black, width: 2.0)
+                  : BorderSide(color: Colors.blue, width: 2.0),
+              padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0),
+              onPressed: _isLoginButtonDisabled ? null : _submitCredential,
+              child: Text("Вход",
+                  style: TextStyle(
+                      color:
+                          _isLoginButtonDisabled ? Colors.black54 : Colors.blue,
+                      fontSize: 16.0,
+                      fontWeight: _isLoginButtonDisabled
+                          ? FontWeight.normal
+                          : FontWeight.bold)),
             )
           ],
-        ));
+        )
+      ],
+    ));
   }
 
-  void _submitCredential(String firstName, String lastName) {
-//    // TODO check firstName length
-//    bool result = _bloc.loginUser(firstName: firstName, lastName: lastName);
-//    // TODO handle result
-//    if (result) {
-//      Navigator.pushReplacement(
-//          context,
-//          MaterialPageRoute(
-//              builder: (BuildContext context) => _bloc.getNextScreen()));
-//    }
+  void _submitCredential() {
+    var phoneNumber = _phoneNumberController.text.toString();
+    if (phoneNumber.length == 10) {
+      _bloc.loginUser(phoneNumber: "+7$phoneNumber");
+    }
+  }
+
+  void _onChangePhoneNumberField() {
+    setState(() {
+      if (_phoneNumberController.text.length == 10) {
+        _isLoginButtonDisabled = false;
+      } else {
+        _isLoginButtonDisabled = true;
+      }
+    });
   }
 }
