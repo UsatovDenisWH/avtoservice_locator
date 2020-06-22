@@ -1,7 +1,7 @@
 import 'package:avtoservicelocator/bloc/common/base_bloc.dart';
-import 'package:avtoservicelocator/data/current_user_service.dart';
-import 'package:avtoservicelocator/di/screen_builder_service.dart';
 import 'package:avtoservicelocator/model/user.dart';
+import 'package:avtoservicelocator/service/current_user_service.dart';
+import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fimber/flutter_fimber.dart';
@@ -11,7 +11,7 @@ class LoginBloc extends BlocBase {
   final ScreenBuilderService _screenBuilderService;
   BuildContext context;
 
-  final _log = FimberLog("FLU_CHAT");
+  final _log = FimberLog("AvtoService Locator");
 
   LoginBloc(
       {@required CurrentUserService currentUserService,

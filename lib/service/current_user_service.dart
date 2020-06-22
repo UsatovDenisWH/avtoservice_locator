@@ -9,7 +9,7 @@ class CurrentUserService {
   IDataSource _dataSource;
   bool isInitialized;
 
-  final _log = FimberLog("FLU_CHAT");
+  final _log = FimberLog("AvtoService Locator");
   final _CURRENT_USER_PHONE = "CURRENT_USER_PHONE";
 
   CurrentUserService({@required IDataSource dataSource})
@@ -20,6 +20,10 @@ class CurrentUserService {
     var phoneNumber = await _loadUserPhoneFromSPrefs();
     if (phoneNumber != null) {
       _currentUser = await _dataSource.getUserByPhone(phoneNumber: phoneNumber);
+      if (_currentUser == null) {
+        _currentUser = User(phoneNumber: phoneNumber);
+        await _dataSource.updateUser(user: _currentUser);
+      }
     }
     _log.d("CurrentUserService initialize() end");
     return true;

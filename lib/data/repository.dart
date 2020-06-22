@@ -1,7 +1,7 @@
-import 'dart:async';
-
-import 'package:avtoservicelocator/data/current_user_service.dart';
 import 'package:avtoservicelocator/data/i_data_source.dart';
+import 'package:avtoservicelocator/model/request.dart';
+import 'package:avtoservicelocator/service/current_user_service.dart';
+import 'package:avtoservicelocator/service/stream_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_fimber/flutter_fimber.dart';
 
@@ -10,39 +10,63 @@ class Repository {
   CurrentUserService _currentUserService;
   Future<bool> isInitialized;
 
-  final _log = FimberLog("FLU_CHAT");
+  List<Request> _requests;
+  Sink<List<Request>> _inListRequests;
+
+  final _log = FimberLog("AvtoService Locator");
 
   Repository(
       {@required IDataSource dataSource,
-      @required CurrentUserService currentUserService}) {
+      @required CurrentUserService currentUserService,
+      @required StreamService streamService}) {
     _dataSource = dataSource;
     _currentUserService = currentUserService;
     isInitialized = initialize();
+    streamService.changeInDataSource.listen(onChangeInDataSource);
+    _inListRequests = streamService.listRequests.sink;
     _log.d("Repository create");
   }
 
-  @override
   Future<bool> initialize() async {
     _log.d("Repository initRepository() start");
-
     try {
       _dataSource.isInitialized = await _dataSource.initialize();
-    } on Exception catch (error, stackTrace) {
-      _handleException(error, stackTrace);
-    }
-
-    try {
+      _log.d(
+          "Repository initRepository() _dataSource.isInitialized = ${_dataSource.isInitialized}");
       _currentUserService.isInitialized =
           await _currentUserService.initialize();
+      _log.d(
+          "Repository initRepository() _currentUserService.isInitialized = ${_currentUserService.isInitialized}");
+      _log.d(
+          "Repository initRepository() _currentUserService.getCurrentUser().phoneNumber = ${_currentUserService.getCurrentUser()?.phoneNumber}");
     } on Exception catch (error, stackTrace) {
       _handleException(error, stackTrace);
     }
-
+//    onChangeInDataSource(DataSourceEvent.ALL_REFRESH);
+    _requests = await _dataSource.loadRequests(
+        user: _currentUserService.getCurrentUser());
+    _inListRequests.add(_requests);
+    _log.d(
+        "Repository initRepository() _requests.length = ${_requests.length}");
     _log.d("Repository initRepository() end");
     return true;
   }
 
-  @override
+  void onChangeInDataSource(DataSourceEvent event) async {
+    if (event == DataSourceEvent.REQUESTS_REFRESH) {
+      _requests = await _dataSource.loadRequests(
+          user: _currentUserService.getCurrentUser());
+      _inListRequests.add(_requests);
+      _log.d("Repository onChangeInDataSource REQUESTS_REFRESH");
+    } else if (event == DataSourceEvent.MESSAGES_REFRESH) {
+      _log.d("Repository onChangeInDataSource MESSAGES_REFRESH");
+    } else if (event == DataSourceEvent.ALL_REFRESH) {
+      onChangeInDataSource(DataSourceEvent.REQUESTS_REFRESH);
+      onChangeInDataSource(DataSourceEvent.MESSAGES_REFRESH);
+      _log.d("Repository onChangeInDataSource ALL_REFRESH");
+    }
+  }
+
   void dispose() {
     _log.d("Repository dispose");
   }
