@@ -1,5 +1,6 @@
 import 'package:avtoservicelocator/bloc/proposal_bloc.dart';
 import 'package:avtoservicelocator/model/proposal_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProposalScreenItem extends StatelessWidget {
@@ -12,51 +13,105 @@ class ProposalScreenItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var bDazzledBlueColor = Color.fromARGB(0xFF, 0x2E, 0x58, 0x94);
 
-    var row1 = Text(
-      "#${_proposalItem.name}. ${_proposalItem.price}",
-      style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: bDazzledBlueColor),
-      overflow: TextOverflow.ellipsis,
+    var row1 = Row(
+      children: <Widget>[
+        Text(
+          "${_proposalItem.name}",
+          style: TextStyle(
+              fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+        ),
+        Expanded(child: Container()),
+        Text(
+          "${_proposalItem.price} \u{20BD}",
+          style: TextStyle(
+              fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+        )
+      ],
     );
 
-    var row2 = Text(
-      "#${_proposalItem.name}. ${_proposalItem.price}",
-      style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: bDazzledBlueColor),
-      overflow: TextOverflow.ellipsis,
+    var row2 = Icon(
+      Icons.star,
+      color: Colors.black38,
     );
 
-    var row3 = Text(
-      "#${_proposalItem.name}. ${_proposalItem.price}",
-      style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: bDazzledBlueColor),
-      overflow: TextOverflow.ellipsis,
+    var row3 = Row(
+      children: <Widget>[
+        Icon(
+          Icons.credit_card,
+          color: Colors.orangeAccent,
+        ),
+        SizedBox(
+          width: 8.0,
+        ),
+        Text(
+          "10% кэшбек",
+          style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black38),
+          overflow: TextOverflow.ellipsis,
+        )
+      ],
     );
 
-    var row4 = Text(
-      "#${_proposalItem.name}. ${_proposalItem.price}",
-      style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: bDazzledBlueColor),
-      overflow: TextOverflow.ellipsis,
+    var row4 = Row(
+      children: <Widget>[
+        Icon(
+          Icons.map,
+          color: Colors.blue,
+        ),
+        SizedBox(
+          width: 8.0,
+        ),
+        Text(
+          _proposalItem.address,
+          style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: bDazzledBlueColor),
+          overflow: TextOverflow.ellipsis,
+        )
+      ],
     );
 
-    var row5 = Text(
-      "#${_proposalItem.name}. ${_proposalItem.price}",
-      style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: bDazzledBlueColor),
-      overflow: TextOverflow.ellipsis,
+    var row5 = Row(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              color: bDazzledBlueColor, borderRadius: BorderRadius.circular(4)),
+          padding: EdgeInsets.all(4.0),
+          child: Text(
+            _proposalItem.rating.toString(),
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+        SizedBox(
+          width: 8.0,
+        ),
+        Text(
+          "Рейтинг пользователей",
+          style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: bDazzledBlueColor),
+          overflow: TextOverflow.ellipsis,
+        ),
+        Expanded(child: Container()),
+        Text(
+          _counterFeedbacksToText(),
+          style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black38),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
-
 
     return InkWell(
       onTap: () {
@@ -69,13 +124,41 @@ class ProposalScreenItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              SizedBox(
+                height: 8.0,
+              ),
               row1,
+              SizedBox(
+                height: 8.0,
+              ),
               row2,
+              SizedBox(
+                height: 8.0,
+              ),
               row3,
+              SizedBox(
+                height: 8.0,
+              ),
               row4,
+              SizedBox(
+                height: 16.0,
+              ),
               row5,
             ],
           )),
     );
+  }
+
+  String _counterFeedbacksToText() {
+    var result = "";
+    var count = _proposalItem.counterFeedbacks;
+    if (count >= 11 && count <= 14) {
+      result = "$count отзывов";
+    } else if (count % 10 == 1) {
+      result = "$count отзыв";
+    } else if (count % 10 >= 2 && count % 10 <= 4) {
+      result = "$count отзыва";
+    }
+    return result;
   }
 }

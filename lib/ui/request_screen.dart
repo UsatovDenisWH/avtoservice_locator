@@ -30,7 +30,7 @@ class _RequestScreenState extends State<RequestScreen> {
         stream: _bloc.outRequestItems,
         builder:
             (BuildContext context, AsyncSnapshot<List<RequestItem>> snapshot) {
-          if (snapshot.data.isEmpty) {
+          if (snapshot.data == null || snapshot.data.isEmpty) {
             return Center(child: CircularProgressIndicator());
           } else {
             return ListView.separated(
@@ -39,7 +39,7 @@ class _RequestScreenState extends State<RequestScreen> {
                 itemBuilder: (BuildContext context, int index) =>
                     RequestScreenItem(snapshot.data[index], _bloc),
                 separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(height: 1));
+                    const Divider(height: 10, color: Colors.black,));
           }
         },
       ),

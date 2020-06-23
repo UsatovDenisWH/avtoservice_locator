@@ -37,7 +37,7 @@ class _ProposalScreenState extends State<ProposalScreen> {
                   itemBuilder: (BuildContext context, int index) =>
                       ProposalScreenItem(snapshot.data[index], _bloc),
                   separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(height: 1));
+                      const Divider(thickness: 5, color: Colors.black12,));
             }
           },
         ),

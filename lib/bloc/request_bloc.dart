@@ -1,5 +1,4 @@
 import 'package:avtoservicelocator/bloc/common/base_bloc.dart';
-import 'package:avtoservicelocator/data/i_data_source.dart';
 import 'package:avtoservicelocator/data/repository.dart';
 import 'package:avtoservicelocator/model/request_item.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
@@ -35,8 +34,7 @@ class RequestBloc extends BlocBase {
         "onTapRequestItem() item.descProposals = ${item.descProposals?.length}");
     if (item.descProposals?.length == 2) {
       _streamService.filterRequestId = item.id;
-      //TODO
-      _repository.onChangeInDataSource(DataSourceEvent.REQUESTS_REFRESH);
+      _streamService.refreshData.add(RefreshDataEvent.LIST_REQUEST);
 
       var proposalScreen = _screenBuilderService.getProposalScreenBuilder();
       Navigator.push(context,

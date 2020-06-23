@@ -62,9 +62,9 @@ class Request {
     if (proposals == null || proposals.length == 0) {
       result.add("Ожидание предложений");
     } else {
-      //TODO
-      result.add("Х предложений");
-      result.add("от Y");
+      result.add("${proposals.length} предложения");
+      result.add(
+          "от ${proposals.reduce((current, next) => current.price < next.price ? current : next).price} \u{20BD}");
     }
     return result;
   }

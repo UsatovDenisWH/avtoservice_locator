@@ -23,6 +23,7 @@ class Repository {
     _currentUserService = currentUserService;
     isInitialized = initialize();
     streamService.changeInDataSource.listen(onChangeInDataSource);
+    streamService.refreshData.listen(onRefreshData);
     _inListRequests = streamService.listRequests.sink;
     _log.d("Repository create");
   }
@@ -64,6 +65,12 @@ class Repository {
       onChangeInDataSource(DataSourceEvent.REQUESTS_REFRESH);
       onChangeInDataSource(DataSourceEvent.MESSAGES_REFRESH);
       _log.d("Repository onChangeInDataSource ALL_REFRESH");
+    }
+  }
+
+  void onRefreshData(RefreshDataEvent event) {
+    if (event == RefreshDataEvent.LIST_REQUEST) {
+      _inListRequests.add(_requests);
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:rxdart/rxdart.dart';
 
 class StreamService {
   final changeInDataSource = PublishSubject<DataSourceEvent>();
+  final refreshData = PublishSubject<RefreshDataEvent>();
 
   final listRequests = BehaviorSubject<List<Request>>();
   final listRequestItems = BehaviorSubject<List<RequestItem>>();
@@ -143,6 +144,7 @@ class StreamService {
   @override
   void dispose() {
     changeInDataSource.close();
+    refreshData.close();
     listRequests.close();
     listMessages.close();
     listRequestItems.close();
@@ -150,4 +152,8 @@ class StreamService {
     listMessageItems.close();
     _log.d("StreamService dispose");
   }
+}
+
+enum RefreshDataEvent {
+  LIST_REQUEST
 }

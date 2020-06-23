@@ -56,7 +56,7 @@ class RequestScreenItem extends StatelessWidget {
                       ),
                       Icon(
                         Icons.monetization_on,
-                        color: Colors.black54,
+                        color: Colors.black,
                         size: 16.0,
                       ),
                       SizedBox(
@@ -64,7 +64,10 @@ class RequestScreenItem extends StatelessWidget {
                       ),
                       Text(
                         "${_requestItem.descProposals[1]}",
-                        style: TextStyle(fontSize: 16.0),
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
                       )
                     ],
                   )
@@ -88,8 +91,17 @@ class RequestScreenItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         row1,
+                        SizedBox(
+                          height: 4.0,
+                        ),
                         row2,
+                        SizedBox(
+                          height: 4.0,
+                        ),
                         row3,
+                        SizedBox(
+                          height: 4.0,
+                        ),
                         row4,
                       ],
                     ))),
