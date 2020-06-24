@@ -1,3 +1,4 @@
+import 'package:avtoservicelocator/bloc/autoservice_bloc.dart';
 import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
 import 'package:avtoservicelocator/bloc/login_bloc.dart';
 import 'package:avtoservicelocator/bloc/proposal_bloc.dart';
@@ -10,6 +11,8 @@ typedef BlocProvider<StartupBloc> StartupScreenBuilder();
 typedef BlocProvider<LoginBloc> LoginScreenBuilder();
 typedef BlocProvider<RequestBloc> RequestScreenBuilder();
 typedef BlocProvider<ProposalBloc> ProposalScreenBuilder(String requestId);
+typedef BlocProvider<AutoserviceBloc> AutoserviceScreenBuilder(String proposalId);
+
 
 class ScreenBuilderService {
   final Injector _injector;
@@ -22,4 +25,6 @@ class ScreenBuilderService {
   getRequestScreenBuilder() => _injector.get<RequestScreenBuilder>();
 
   getProposalScreenBuilder() => _injector.get<ProposalScreenBuilder>();
+
+  getAutoserviceScreenBuilder() => _injector.get<AutoserviceScreenBuilder>();
 }

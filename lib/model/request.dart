@@ -40,18 +40,11 @@ class Request {
         this.proposals = proposals;
 
   RequestItem toRequestItem() {
-    var statusText;
-    if (status == RequestStatus.ACTIVE) {
-      statusText = "Активная заявка";
-    } else if (status == RequestStatus.DONE) {
-      statusText = "Завершённая заявка";
-    } else if (status == RequestStatus.CANCEL) {
-      statusText = "Отменённая заявка";
-    }
+
     return RequestItem(
         id: id,
         number: number,
-        status: statusText,
+        status: status,
         descCar: car.getCarDescription(),
         descRequest: description,
         descProposals: getProposalsDescription());

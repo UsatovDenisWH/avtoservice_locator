@@ -33,6 +33,12 @@ class DummyDataSource implements IDataSource {
   }
 
   @override
+  Future<bool> updateRequest({@required Request request}) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    return true;
+  }
+
+  @override
   Future<List<Request>> loadRequests({@required User user}) async {
     await Future.delayed(Duration(milliseconds: 500));
     return _requests;

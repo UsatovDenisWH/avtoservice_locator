@@ -11,6 +11,8 @@ abstract class IDataSource {
 
   Future<bool> updateUser({@required User user});
 
+  Future<bool> updateRequest({@required Request request});
+
   Future<List<Request>> loadRequests({@required User user});
 }
 

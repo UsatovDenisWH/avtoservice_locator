@@ -1,4 +1,5 @@
 import 'package:avtoservicelocator/data/i_data_source.dart';
+import 'package:avtoservicelocator/model/proposal.dart';
 import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/service/current_user_service.dart';
 import 'package:avtoservicelocator/service/stream_service.dart';
@@ -72,6 +73,43 @@ class Repository {
     if (event == RefreshDataEvent.LIST_REQUEST) {
       _inListRequests.add(_requests);
     }
+  }
+
+  Proposal getProposalById({@required String proposalId}) {
+    Proposal result;
+    for (var request in _requests) {
+      result = request.proposals?.firstWhere(
+          (element) => element.id == proposalId,
+          orElse: () => null);
+      if (result != null) break;
+    }
+    return result;
+  }
+
+  void updateRequest(
+      {String requestId, String proposalId, RequestStatus newStatus}) {
+    assert(requestId != null || proposalId != null, "There are no props!");
+    assert(newStatus != null, "Nothing to change!");
+    // Finding request
+    Request request;
+    if (requestId != null) {
+      request = _requests.firstWhere((element) => element.id == requestId);
+    } else if (proposalId != null) {
+      var proposal;
+      for (var req in _requests) {
+        request = req;
+        proposal = request.proposals?.firstWhere(
+            (element) => element.id == proposalId,
+            orElse: () => null);
+        if (proposal != null) break;
+      }
+    }
+    // Modifying request
+    if (newStatus != null) {
+      request.status = newStatus;
+    }
+    _dataSource.updateRequest(request: request);
+    onRefreshData(RefreshDataEvent.LIST_REQUEST);
   }
 
   void dispose() {

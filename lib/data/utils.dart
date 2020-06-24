@@ -1,4 +1,4 @@
-
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 class Utils {
@@ -6,5 +6,17 @@ class Utils {
     var uuid = Uuid();
     // Generate a v4 (random) id
     return uuid.v4();
+  }
+
+  static String counterFeedbacksToText({@required int count}) {
+    var result = "";
+    if (count >= 11 && count <= 14) {
+      result = "$count отзывов";
+    } else if (count % 10 == 1) {
+      result = "$count отзыв";
+    } else if (count % 10 >= 2 && count % 10 <= 4) {
+      result = "$count отзыва";
+    }
+    return result;
   }
 }

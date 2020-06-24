@@ -1,5 +1,6 @@
 import 'package:avtoservicelocator/bloc/common/base_bloc.dart';
 import 'package:avtoservicelocator/data/repository.dart';
+import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/model/request_item.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:avtoservicelocator/service/stream_service.dart';
@@ -32,7 +33,7 @@ class RequestBloc extends BlocBase {
   void onTapRequestItem({RequestItem item}) {
     _log.d(
         "onTapRequestItem() item.descProposals = ${item.descProposals?.length}");
-    if (item.descProposals?.length == 2) {
+    if (item.status == RequestStatus.ACTIVE && item.descProposals?.length == 2) {
       _streamService.filterRequestId = item.id;
       _streamService.refreshData.add(RefreshDataEvent.LIST_REQUEST);
 

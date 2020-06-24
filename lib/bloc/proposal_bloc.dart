@@ -25,7 +25,12 @@ class ProposalBloc extends BlocBase {
     _log.d("ProposalBloc create");
   }
 
-  void onTapProposalItem({ProposalItem item}) {}
+  void onTapProposalItem({ProposalItem item}) {
+    _log.d("onTapProposalItem() item.id= ${item.id}");
+    var autoserviceScreen = _screenBuilderService.getAutoserviceScreenBuilder();
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => autoserviceScreen(item.id)));
+  }
 
   @override
   void dispose() {

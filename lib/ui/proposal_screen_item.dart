@@ -1,6 +1,6 @@
 import 'package:avtoservicelocator/bloc/proposal_bloc.dart';
+import 'package:avtoservicelocator/data/utils.dart';
 import 'package:avtoservicelocator/model/proposal_item.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProposalScreenItem extends StatelessWidget {
@@ -103,7 +103,7 @@ class ProposalScreenItem extends StatelessWidget {
         ),
         Expanded(child: Container()),
         Text(
-          _counterFeedbacksToText(),
+          Utils.counterFeedbacksToText(count: _proposalItem.counterFeedbacks),
           style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -120,7 +120,8 @@ class ProposalScreenItem extends StatelessWidget {
       highlightColor: Colors.blue,
       splashColor: Colors.blue,
       child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding:
+              EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -147,18 +148,5 @@ class ProposalScreenItem extends StatelessWidget {
             ],
           )),
     );
-  }
-
-  String _counterFeedbacksToText() {
-    var result = "";
-    var count = _proposalItem.counterFeedbacks;
-    if (count >= 11 && count <= 14) {
-      result = "$count отзывов";
-    } else if (count % 10 == 1) {
-      result = "$count отзыв";
-    } else if (count % 10 >= 2 && count % 10 <= 4) {
-      result = "$count отзыва";
-    }
-    return result;
   }
 }

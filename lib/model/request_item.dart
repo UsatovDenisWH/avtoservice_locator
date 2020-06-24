@@ -1,7 +1,9 @@
+import 'package:avtoservicelocator/model/request.dart';
+
 class RequestItem {
   String id;
   int number;
-  String status;
+  RequestStatus status;
   String descCar;
   String descRequest;
   List<String> descProposals;
@@ -9,7 +11,7 @@ class RequestItem {
   RequestItem(
       {String id,
       int number,
-      String status,
+      RequestStatus status,
       String descCar,
       String descRequest,
       List<String> descProposals})

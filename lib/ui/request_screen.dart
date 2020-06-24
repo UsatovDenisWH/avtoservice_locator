@@ -39,7 +39,7 @@ class _RequestScreenState extends State<RequestScreen> {
                 itemBuilder: (BuildContext context, int index) =>
                     RequestScreenItem(snapshot.data[index], _bloc),
                 separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(height: 10, color: Colors.black,));
+                    const Divider(thickness: 5, color: Colors.black12,));
           }
         },
       ),

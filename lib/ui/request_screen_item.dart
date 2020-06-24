@@ -1,4 +1,5 @@
 import 'package:avtoservicelocator/bloc/request_bloc.dart';
+import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/model/request_item.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +13,17 @@ class RequestScreenItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var bDazzledBlueColor = Color.fromARGB(0xFF, 0x2E, 0x58, 0x94);
 
+    var statusText;
+    if (_requestItem.status == RequestStatus.ACTIVE) {
+      statusText = "Активная заявка";
+    } else if (_requestItem.status == RequestStatus.DONE) {
+      statusText = "Завершённая заявка";
+    } else if (_requestItem.status == RequestStatus.CANCEL) {
+      statusText = "Отменённая заявка";
+    }
+
     var row1 = Text(
-      "#${_requestItem.number}. ${_requestItem.status}",
+      "#${_requestItem.number}. $statusText",
       style: TextStyle(
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
@@ -86,7 +96,7 @@ class RequestScreenItem extends StatelessWidget {
           children: <Widget>[
             Expanded(
                 child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
