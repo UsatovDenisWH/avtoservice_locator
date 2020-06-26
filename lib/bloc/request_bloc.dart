@@ -33,13 +33,13 @@ class RequestBloc extends BlocBase {
   void onTapRequestItem({RequestItem item}) {
     _log.d(
         "onTapRequestItem() item.descProposals = ${item.descProposals?.length}");
-    if (item.status == RequestStatus.ACTIVE && item.descProposals?.length == 2) {
+    if (_isItemCanTapped(item)) {
       _streamService.filterRequestId = item.id;
       _streamService.refreshData.add(RefreshDataEvent.LIST_REQUEST);
 
-      var proposalScreen = _screenBuilderService.getProposalScreenBuilder();
+      var nextScreen = _screenBuilderService.getProposalScreenBuilder();
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => proposalScreen(item.id)));
+          MaterialPageRoute(builder: (context) => nextScreen(item.id)));
     }
   }
 
@@ -47,6 +47,16 @@ class RequestBloc extends BlocBase {
   void dispose() {
     _streamService.filterRequestId = "";
     _log.d("RequestBloc dispose");
+  }
+
+  bool _isItemCanTapped(RequestItem item) {
+    if ((item.status == RequestStatus.ACTIVE ||
+            item.status == RequestStatus.WORK) &&
+        item.descProposals?.length == 2) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

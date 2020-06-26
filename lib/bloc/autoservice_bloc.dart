@@ -10,32 +10,58 @@ class AutoserviceBloc extends BlocBase {
   final ScreenBuilderService _screenBuilderService;
   final Repository _repository;
   final Proposal proposal;
+  final Request request;
+  bool isSubscribeButtonClickable;
+  String subscribeButtonText;
   BuildContext context;
 
   final _log = FimberLog("AvtoService Locator");
 
   AutoserviceBloc(
-      {@required Proposal proposal,
+      {@required String proposalId,
       @required ScreenBuilderService screenBuilderService,
       @required Repository repository})
-      : this.proposal = proposal,
-        this._screenBuilderService = screenBuilderService,
-        this._repository = repository {
+      : this._screenBuilderService = screenBuilderService,
+        this._repository = repository,
+        this.proposal = repository.getProposalById(proposalId: proposalId),
+        this.request = repository.getRequestById(proposalId: proposalId) {
+    _initSubscribeButton();
     _log.d("AutoserviceBlock create");
   }
 
   void onPressedSubscribeButton() {
-    _repository.updateRequest(
-        proposalId: proposal.id, newStatus: RequestStatus.DONE);
-    var nextScreen = _screenBuilderService.getRequestScreenBuilder();
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (BuildContext context) => nextScreen()),
-        (Route<dynamic> route) => false);
+    if (request.status == RequestStatus.ACTIVE) {
+      _repository.updateRequest(
+          requestId: request.id, newStatus: RequestStatus.WORK);
+      var nextScreen = _screenBuilderService.getRequestScreenBuilder();
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => nextScreen()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
+  void onTapAutoserviceLocation() {
+    var nextScreen = _screenBuilderService.getLocationScreenBuilder();
+    Navigator.push(context, nextScreen(location: proposal.autoService.location));
   }
 
   @override
   void dispose() {
     _log.d("AutoserviceBlock dispose");
+  }
+
+  void _initSubscribeButton() {
+    isSubscribeButtonClickable = request.status == RequestStatus.ACTIVE;
+    if (request.status == RequestStatus.ACTIVE) {
+      subscribeButtonText =
+          "Записаться на ремонт за ${proposal.price} \u{20BD}";
+    } else if (request.status == RequestStatus.WORK) {
+      subscribeButtonText = "Заявка в работе";
+    } else if (request.status == RequestStatus.DONE) {
+      subscribeButtonText = "Заявка завершена";
+    } else if (request.status == RequestStatus.CANCEL) {
+      subscribeButtonText = "Заявка отменена";
+    }
   }
 }

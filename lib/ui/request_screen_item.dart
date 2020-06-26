@@ -6,30 +6,33 @@ import 'package:flutter/material.dart';
 class RequestScreenItem extends StatelessWidget {
   final RequestItem _requestItem;
   final RequestBloc _bloc;
+  final Color bDazzledBlueColor = Color.fromARGB(0xFF, 0x2E, 0x58, 0x94);
 
   RequestScreenItem(this._requestItem, this._bloc);
 
   @override
   Widget build(BuildContext context) {
-    var bDazzledBlueColor = Color.fromARGB(0xFF, 0x2E, 0x58, 0x94);
-
-    var statusText;
-    if (_requestItem.status == RequestStatus.ACTIVE) {
-      statusText = "Активная заявка";
-    } else if (_requestItem.status == RequestStatus.DONE) {
-      statusText = "Завершённая заявка";
-    } else if (_requestItem.status == RequestStatus.CANCEL) {
-      statusText = "Отменённая заявка";
-    }
-
-    var row1 = Text(
-      "#${_requestItem.number}. $statusText",
-      style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: bDazzledBlueColor),
-      overflow: TextOverflow.ellipsis,
-    );
+    var row1 = Padding(
+        padding: EdgeInsets.only(top: 4, bottom: 8),
+        child: Row(
+          children: <Widget>[
+            Text(
+              "#${_requestItem.number}. ",
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: _getStatusColor()),
+            ),
+            Text(
+              _requestItem.statusText,
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: _getStatusColor()),
+              overflow: TextOverflow.ellipsis,
+            )
+          ],
+        ));
 
     var row2 = Text(
       "${_requestItem.descCar}",
@@ -38,17 +41,17 @@ class RequestScreenItem extends StatelessWidget {
     );
 
     var row3 = Text("${_requestItem.descRequest}",
-        style: TextStyle(fontSize: 20.0, color: Colors.black54));
+        style: TextStyle(fontSize: 16.0, color: Colors.black));
 
     var isProposals = _requestItem.descProposals.length == 2;
     var row4 = Padding(
-        padding: EdgeInsets.all(4.0),
+        padding: EdgeInsets.only(top: 8, bottom: 4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Icon(
               Icons.message,
-              color: Colors.black54,
+              color: isProposals ? Colors.black : Colors.black54,
               size: 16.0,
             ),
             SizedBox(
@@ -56,7 +59,10 @@ class RequestScreenItem extends StatelessWidget {
             ),
             Text(
               "${_requestItem.descProposals[0]}",
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(
+                  fontSize: 16.0,
+                  color: isProposals ? Colors.black : Colors.black54,
+                  fontWeight: FontWeight.bold),
             ),
             isProposals
                 ? Row(
@@ -124,10 +130,25 @@ class RequestScreenItem extends StatelessWidget {
                 PopupMenuItem<SelectedItemMenu>(
                     value: SelectedItemMenu.CANCEL,
                     child: Text("Отменить заявку"),
-                    enabled: _requestItem.status == "Активная заявка")
+                    enabled: (_requestItem.status == RequestStatus.ACTIVE ||
+                        _requestItem.status == RequestStatus.WORK))
               ],
             )
           ],
         ));
+  }
+
+  Color _getStatusColor() {
+    var color = Colors.black;
+    if (_requestItem.status == RequestStatus.ACTIVE) {
+      color = bDazzledBlueColor;
+    } else if (_requestItem.status == RequestStatus.WORK) {
+      color = Colors.blue;
+    } else if (_requestItem.status == RequestStatus.DONE) {
+      color = Colors.green;
+    } else if (_requestItem.status == RequestStatus.CANCEL) {
+      color = Colors.black38;
+    }
+    return color;
   }
 }

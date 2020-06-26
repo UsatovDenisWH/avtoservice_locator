@@ -12,7 +12,6 @@ class AutoserviceScreen extends StatefulWidget {
 
 class _AutoserviceScreenState extends State<AutoserviceScreen> {
   AutoserviceBloc _bloc;
-  int _price;
   AutoService _autoService;
 
   @override
@@ -20,7 +19,6 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
     super.initState();
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
-    _price = _bloc.proposal.price;
     _autoService = _bloc.proposal.autoService;
   }
 
@@ -48,9 +46,23 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
       ),
     );
 
+    var buttonBack = Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.blue,
+        ),
+        child: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ));
+
     var image = Image.network(
       _autoService.photos[0],
-      fit: BoxFit.fitHeight,
+      height: 250,
+      fit: BoxFit.cover,
       errorBuilder:
           (BuildContext context, Object error, StackTrace stackTrace) =>
               Text(error.toString()),
@@ -109,7 +121,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
     );
 
     var row3 = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.only(left: 16, top: 4, right: 16, bottom: 16),
       child: Row(
         children: <Widget>[
           Icon(
@@ -131,23 +143,99 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
       ),
     );
 
-    var button = Padding(
+    var isClickable = _bloc.isSubscribeButtonClickable;
+    var buttonSubscribe = Padding(
       padding: EdgeInsets.all(16.0),
       child: MaterialButton(
-        color: Colors.lightBlueAccent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4))),
+        color: isClickable ? Colors.lightBlueAccent : Colors.black12,
+        minWidth: 350,
+        elevation: isClickable ? 2 : 0,
+        highlightElevation: isClickable ? 8 : 0,
         child: Padding(
             padding: EdgeInsets.all(20.0),
-            child: Text("Записаться на ремонт за ${_price} \u{20BD}",
+            child: Text(_bloc.subscribeButtonText,
                 style: TextStyle(fontSize: 16.0, color: Colors.white))),
         onPressed: _bloc.onPressedSubscribeButton,
       ),
     );
 
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: appBar,
-        body: Column(
-          children: <Widget>[image, row1, row2, row3, button],
+    var row4 = Padding(
+        padding: EdgeInsets.only(left: 16, top: 16, right: 16),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text("Описание",
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black)),
         ));
+
+    var row5 = InkWell(
+        onTap: _bloc.onTapAutoserviceLocation,
+        splashColor: Colors.lightBlueAccent,
+        highlightColor: Colors.lightBlueAccent,
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            children: <Widget>[
+              Icon(
+                Icons.map,
+                color: Colors.blue,
+              ),
+              SizedBox(
+                width: 8.0,
+              ),
+              Expanded(
+                  child: Text(
+                _autoService.address,
+                style: TextStyle(
+                    fontSize: 18.0,
+//              fontWeight: FontWeight.bold,
+                    color: Colors.black),
+                overflow: TextOverflow.ellipsis,
+              )),
+              SizedBox(
+                width: 8.0,
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+//            color: Colors.blue,
+              ),
+            ],
+          ),
+        ));
+
+    var row6 = Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Text(_autoService.description,
+            style: TextStyle(
+                fontSize: 16.0,
+//              fontWeight: FontWeight.bold,
+                color: Colors.black)));
+
+    return Scaffold(
+        body: Stack(
+      children: <Widget>[
+        ListView(
+          children: <Widget>[
+            image,
+            row1,
+            row2,
+            row3,
+            buttonSubscribe,
+            row4,
+            row5,
+            row6
+          ],
+        ),
+        Align(alignment: Alignment(-1.0, -0.92), child: buttonBack)
+      ],
+    ));
+/*        Column(
+//          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[image, row1, row2, row3, buttonSubscribe, row4, row5, row6],
+        )*/
   }
 }

@@ -40,7 +40,6 @@ class Request {
         this.proposals = proposals;
 
   RequestItem toRequestItem() {
-
     return RequestItem(
         id: id,
         number: number,
@@ -63,4 +62,4 @@ class Request {
   }
 }
 
-enum RequestStatus { ACTIVE, DONE, CANCEL }
+enum RequestStatus { ACTIVE, WORK, DONE, CANCEL }

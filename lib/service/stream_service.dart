@@ -126,7 +126,7 @@ class StreamService {
     }
 //    return proposalItems;
     _log.d(
-        "StreamService _convertRequestsToProposalItems(${proposalItems.length} end.");
+        "StreamService _convertRequestsToProposalItems(${proposalItems.length}) end.");
   }
 
   List<MessageItem> _convertMessagesToMessageItems(List<Message> messages) {

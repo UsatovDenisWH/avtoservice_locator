@@ -1,5 +1,6 @@
 import 'package:avtoservicelocator/bloc/autoservice_bloc.dart';
 import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
+import 'package:avtoservicelocator/bloc/location_bloc.dart';
 import 'package:avtoservicelocator/bloc/login_bloc.dart';
 import 'package:avtoservicelocator/bloc/proposal_bloc.dart';
 import 'package:avtoservicelocator/bloc/request_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:avtoservicelocator/service/current_user_service.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:avtoservicelocator/service/stream_service.dart';
 import 'package:avtoservicelocator/ui/autoservice_screen.dart';
+import 'package:avtoservicelocator/ui/location_screen.dart';
 import 'package:avtoservicelocator/ui/login_screen.dart';
 import 'package:avtoservicelocator/ui/proposal_screen.dart';
 import 'package:avtoservicelocator/ui/request_screen.dart';
@@ -102,9 +104,18 @@ class DiContainer {
         (i) => (String proposalId) => BlocProvider<AutoserviceBloc>(
               child: AutoserviceScreen(),
               bloc: AutoserviceBloc(
-                  proposal: i
-                      .get<Repository>()
-                      .getProposalById(proposalId: proposalId),
+                  proposalId: proposalId,
+                  screenBuilderService: i.get<ScreenBuilderService>(),
+                  repository: i.get<Repository>()),
+            ),
+        isSingleton: true);
+
+    // Location screen
+    _injector.map<LocationScreenBuilder>(
+        (i) => (String location) => BlocProvider<LocationBloc>(
+              child: LocationScreen(),
+              bloc: LocationBloc(
+                  location: location,
                   screenBuilderService: i.get<ScreenBuilderService>(),
                   repository: i.get<Repository>()),
             ),

@@ -24,5 +24,5 @@ class Car {
         this.stateNumber = stateNumber,
         this.odometer = odometer;
 
-  String getCarDescription() => "$mark $model, ${releaseYear.year}";
+  String getCarDescription() => "$mark $model (${releaseYear.year})";
 }

@@ -75,6 +75,25 @@ class Repository {
     }
   }
 
+  Request getRequestById({String requestId, String proposalId}) {
+    assert(requestId != null || proposalId != null, "There are no props!");
+    Request result;
+
+    if (requestId != null) {
+      result = _requests.firstWhere((element) => element.id == requestId);
+    } else if (proposalId != null) {
+      var proposal;
+      for (var req in _requests) {
+        result = req;
+        proposal = result.proposals?.firstWhere(
+            (element) => element.id == proposalId,
+            orElse: () => null);
+        if (proposal != null) break;
+      }
+    }
+    return result;
+  }
+
   Proposal getProposalById({@required String proposalId}) {
     Proposal result;
     for (var request in _requests) {
@@ -91,19 +110,7 @@ class Repository {
     assert(requestId != null || proposalId != null, "There are no props!");
     assert(newStatus != null, "Nothing to change!");
     // Finding request
-    Request request;
-    if (requestId != null) {
-      request = _requests.firstWhere((element) => element.id == requestId);
-    } else if (proposalId != null) {
-      var proposal;
-      for (var req in _requests) {
-        request = req;
-        proposal = request.proposals?.firstWhere(
-            (element) => element.id == proposalId,
-            orElse: () => null);
-        if (proposal != null) break;
-      }
-    }
+    var request = getRequestById(requestId: requestId, proposalId: proposalId);
     // Modifying request
     if (newStatus != null) {
       request.status = newStatus;
