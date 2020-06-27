@@ -230,7 +230,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
             row6
           ],
         ),
-        Align(alignment: Alignment(-1.0, -0.92), child: buttonBack)
+        Align(alignment: Alignment(-0.97, -0.925), child: buttonBack)
       ],
     ));
 /*        Column(

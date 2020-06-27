@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class Utils {
@@ -18,5 +19,10 @@ class Utils {
       result = "$count отзыва";
     }
     return result;
+  }
+
+  static LatLng stringToLatLng({@required String location}) {
+    var arr = location.split(",");
+    return LatLng(double.parse(arr[0]), double.parse(arr[1]));
   }
 }

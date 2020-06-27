@@ -43,7 +43,10 @@ class AutoserviceBloc extends BlocBase {
 
   void onTapAutoserviceLocation() {
     var nextScreen = _screenBuilderService.getLocationScreenBuilder();
-    Navigator.push(context, nextScreen(location: proposal.autoService.location));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => nextScreen(proposal)));
   }
 
   @override

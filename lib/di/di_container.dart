@@ -8,6 +8,7 @@ import 'package:avtoservicelocator/bloc/startup_bloc.dart';
 import 'package:avtoservicelocator/data/dummy_data_source.dart';
 import 'package:avtoservicelocator/data/i_data_source.dart';
 import 'package:avtoservicelocator/data/repository.dart';
+import 'package:avtoservicelocator/model/proposal.dart';
 import 'package:avtoservicelocator/service/current_user_service.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:avtoservicelocator/service/stream_service.dart';
@@ -112,10 +113,10 @@ class DiContainer {
 
     // Location screen
     _injector.map<LocationScreenBuilder>(
-        (i) => (String location) => BlocProvider<LocationBloc>(
+        (i) => (Proposal proposal) => BlocProvider<LocationBloc>(
               child: LocationScreen(),
               bloc: LocationBloc(
-                  location: location,
+                  proposal: proposal,
                   screenBuilderService: i.get<ScreenBuilderService>(),
                   repository: i.get<Repository>()),
             ),
