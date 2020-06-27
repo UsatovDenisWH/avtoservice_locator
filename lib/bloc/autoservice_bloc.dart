@@ -44,9 +44,11 @@ class AutoserviceBloc extends BlocBase {
   void onTapAutoserviceLocation() {
     var nextScreen = _screenBuilderService.getLocationScreenBuilder();
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => nextScreen(proposal)));
+        context, MaterialPageRoute(builder: (context) => nextScreen(proposal)));
+  }
+
+  void onTapButtonBack() {
+    Navigator.pop(context);
   }
 
   @override
@@ -56,6 +58,7 @@ class AutoserviceBloc extends BlocBase {
 
   void _initSubscribeButton() {
     isSubscribeButtonClickable = request.status == RequestStatus.ACTIVE;
+
     if (request.status == RequestStatus.ACTIVE) {
       subscribeButtonText =
           "Записаться на ремонт за ${proposal.price} \u{20BD}";

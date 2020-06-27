@@ -22,12 +22,25 @@ class ProposalScreenItem extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         Expanded(child: Container()),
-        Text(
-          "${_proposalItem.price} \u{20BD}",
-          style: TextStyle(
-              fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black),
-          overflow: TextOverflow.ellipsis,
-        )
+        Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(
+                Radius.circular(4),
+              ),
+//              border: BoxBorder(),
+              color: bDazzledBlueColor,
+            ),
+            padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+            transform: Matrix4.rotationZ(0.1),
+            child: Text(
+              "\u{2022}  ${_proposalItem.price} \u{20BD}",
+              style: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+              overflow: TextOverflow.ellipsis,
+            ))
       ],
     );
 

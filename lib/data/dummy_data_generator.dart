@@ -48,7 +48,27 @@ class DummyDataGenerator {
               date: DateTime.now(),
               userName: "Михаил",
               text: "Справились быстро и качественно",
-              rating: 9.5)
+              rating: 9.5),
+          UserFeedback(
+              date: DateTime.now(),
+              userName: "Геннадий",
+              text: "Быстро, качественно",
+              rating: 9.9),
+          UserFeedback(
+              date: DateTime.now(),
+              userName: "Александр",
+              text: "Все хорошо!",
+              rating: 10),
+          UserFeedback(
+              date: DateTime.now(),
+              userName: "Николай",
+              text: "Произвели диагностику на достойном уровне",
+              rating: 9.7),
+          UserFeedback(
+              date: DateTime.now(),
+              userName: "Сергей",
+              text: "Все устроило. Хорошо сделали, быстро!",
+              rating: 10)
         ]),
     AutoService(
         name: "AvtoCool",
@@ -64,16 +84,7 @@ class DummyDataGenerator {
         userRating: 9.9,
         stars: 4,
         feedbacks: [
-          UserFeedback(
-              date: DateTime.now(),
-              userName: "Геннадий",
-              text: "Быстро, качественно",
-              rating: 9.9),
-          UserFeedback(
-              date: DateTime.now(),
-              userName: "Александр",
-              text: "Все хорошо!",
-              rating: 10)
+
         ]),
     AutoService(
         name: "АССА Авто",
@@ -89,16 +100,7 @@ class DummyDataGenerator {
         userRating: 9.5,
         stars: 2,
         feedbacks: [
-          UserFeedback(
-              date: DateTime.now(),
-              userName: "Николай",
-              text: "Произвели диагностику на достойном уровне",
-              rating: 9.7),
-          UserFeedback(
-              date: DateTime.now(),
-              userName: "Сергей",
-              text: "Все устроило. Хорошо сделали, быстро!",
-              rating: 10)
+
         ])
   ];
 

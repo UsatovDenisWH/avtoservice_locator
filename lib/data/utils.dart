@@ -17,6 +17,8 @@ class Utils {
       result = "$count отзыв";
     } else if (count % 10 >= 2 && count % 10 <= 4) {
       result = "$count отзыва";
+    } else {
+      result = "$count отзывов";
     }
     return result;
   }

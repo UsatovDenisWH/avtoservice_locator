@@ -17,7 +17,7 @@ class _LocationScreenState extends State<LocationScreen> {
   Proposal _proposal;
   Completer<GoogleMapController> _controller = Completer();
   LatLng _target;
-  MapType _currentMapType = MapType.normal;
+  MapType _currentMapType = MapType.hybrid;
   Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
@@ -28,8 +28,9 @@ class _LocationScreenState extends State<LocationScreen> {
         markerId: MarkerId(_target.toString()),
         position: _target,
         infoWindow: InfoWindow(
-            title: _proposal.autoService.name,
-            snippet: "Рейтинг: ${_proposal.autoService.userRating}"),
+            title:
+                "${_proposal.autoService.name}, рейтинг ${_proposal.autoService.userRating}",
+            snippet: _proposal.autoService.address),
         anchor: Offset(0.0, 1.0),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       ));
@@ -66,7 +67,7 @@ class _LocationScreenState extends State<LocationScreen> {
           color: Colors.blue,
         ),
         child: IconButton(
-          icon: const Icon(Icons.map),
+          icon: const Icon(Icons.layers),
           color: Colors.white,
           onPressed: _onTapButtonMapType,
         ));
@@ -75,7 +76,7 @@ class _LocationScreenState extends State<LocationScreen> {
         body: Stack(children: <Widget>[
       GoogleMap(
         onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(target: _target, zoom: 16.0),
+        initialCameraPosition: CameraPosition(target: _target, zoom: 17.0),
         mapType: _currentMapType,
         markers: _markers,
       ),
