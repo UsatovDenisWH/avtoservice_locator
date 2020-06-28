@@ -18,6 +18,7 @@ import 'package:avtoservicelocator/ui/login_screen.dart';
 import 'package:avtoservicelocator/ui/proposal_screen.dart';
 import 'package:avtoservicelocator/ui/request_screen.dart';
 import 'package:avtoservicelocator/ui/startup_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
 
 class DiContainer {
@@ -31,7 +32,7 @@ class DiContainer {
 
 //  static Injector getInjector() => _injector;
 
-  static getStartupScreen() {
+  static Widget getStartupScreen() {
     return (_injector.get<StartupScreenBuilder>())();
   }
 

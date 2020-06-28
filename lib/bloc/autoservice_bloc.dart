@@ -34,17 +34,20 @@ class AutoserviceBloc extends BlocBase {
       _repository.updateRequest(
           requestId: request.id, newStatus: RequestStatus.WORK);
       var nextScreen = _screenBuilderService.getRequestScreenBuilder();
-      Navigator.pushAndRemoveUntil(
+      Navigator.pushAndRemoveUntil<dynamic>(
           context,
-          MaterialPageRoute(builder: (BuildContext context) => nextScreen()),
+          MaterialPageRoute<dynamic>(
+              builder: (BuildContext context) => nextScreen()),
           (Route<dynamic> route) => false);
     }
   }
 
   void onTapAutoserviceLocation() {
     var nextScreen = _screenBuilderService.getLocationScreenBuilder();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => nextScreen(proposal)));
+    Navigator.push<Widget>(
+        context,
+        MaterialPageRoute<Widget>(
+            builder: (BuildContext context) => nextScreen(proposal)));
   }
 
   void onTapButtonBack() {

@@ -28,8 +28,10 @@ class ProposalBloc extends BlocBase {
   void onTapProposalItem({ProposalItem item}) {
     _log.d("onTapProposalItem() item.id= ${item.id}");
     var nextScreen = _screenBuilderService.getAutoserviceScreenBuilder();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => nextScreen(item.id)));
+    Navigator.push<Widget>(
+        context,
+        MaterialPageRoute<Widget>(
+            builder: (BuildContext context) => nextScreen(item.id)));
   }
 
   @override

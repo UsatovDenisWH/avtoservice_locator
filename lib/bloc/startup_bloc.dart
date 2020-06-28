@@ -27,15 +27,17 @@ class StartupBloc extends BlocBase {
   }
 
   void gotoNextScreen() {
-    var nextScreen;
+    Widget Function() nextScreen;
     var currentUser = _currentUserService.getCurrentUser();
     if (currentUser == null) {
       nextScreen = _screenBuilderService.getLoginScreenBuilder();
     } else {
       nextScreen = _screenBuilderService.getRequestScreenBuilder();
     }
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (BuildContext context) => nextScreen()));
+    Navigator.pushReplacement<Widget, Widget>(
+        context,
+        MaterialPageRoute<Widget>(
+            builder: (BuildContext context) => nextScreen()));
   }
 
   @override

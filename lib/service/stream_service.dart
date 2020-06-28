@@ -1,6 +1,7 @@
 import 'package:avtoservicelocator/data/i_data_source.dart';
 import 'package:avtoservicelocator/model/message.dart';
 import 'package:avtoservicelocator/model/message_item.dart';
+import 'package:avtoservicelocator/model/proposal.dart';
 import 'package:avtoservicelocator/model/proposal_item.dart';
 import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/model/request_item.dart';
@@ -23,12 +24,12 @@ class StreamService {
   String filterMessageItems;
   String filterRequestId;
 
-  final _log = FimberLog("AvtoService Locator");
+  final _log = FimberLog('AvtoService Locator');
 
   StreamService() {
-    filterRequestItems = "";
-    filterMessageItems = "";
-    filterRequestId = "";
+    filterRequestItems = '';
+    filterMessageItems = '';
+    filterRequestId = '';
 
     listRequests.listen(_convertRequestsToRequestItems);
     listRequests.listen(_convertRequestsToProposalItems);
@@ -47,11 +48,11 @@ class StreamService {
 //        .map(_filterMessageItems)
 //        .listen(listMessageItems.add);
 
-    _log.d("StreamsService create");
+    _log.d('StreamsService create');
   }
 
   List<RequestItem> _filterRequestItems(List<RequestItem> inRequestItems) {
-    _log.d("StreamService _filterRequestItems() start");
+    _log.d('StreamService _filterRequestItems() start');
     List<RequestItem> outRequestItems;
 
     if (filterRequestItems.isEmpty) {
@@ -66,7 +67,7 @@ class StreamService {
         }
       });
     }
-    _log.d("StreamService _filterRequestItems(${outRequestItems.length})");
+    _log.d('StreamService _filterRequestItems(${outRequestItems.length})');
     return outRequestItems;
   }
 
@@ -90,35 +91,34 @@ class StreamService {
 
   void /*List<RequestItem>*/ _convertRequestsToRequestItems(
       List<Request> requests) {
-    _log.d(
-        "StreamService _convertRequestsToRequestItems() start");
-    var requestItems = List<RequestItem>();
+    _log.d('StreamService _convertRequestsToRequestItems() start');
+    var requestItems = <RequestItem>[];
     RequestItem item;
 
-    requests.forEach((request) {
+    requests.forEach((Request request) {
       item = request.toRequestItem();
       requestItems.add(item);
     });
     _log.d(
-        "StreamService _convertRequestsToRequestItems(${requestItems.length})");
+        'StreamService _convertRequestsToRequestItems(${requestItems.length})');
 //    return requestItems;
     listRequestItems.add(_filterRequestItems(requestItems));
   }
 
   void /*List<ProposalItem>*/ _convertRequestsToProposalItems(
       List<Request> requests) {
-    _log.d("StreamService _convertRequestsToProposalItems() start");
-    var proposalItems = List<ProposalItem>();
+    _log.d('StreamService _convertRequestsToProposalItems() start');
+    var proposalItems = <ProposalItem>[];
     ProposalItem item;
 
     var requestIndex =
-        requests.indexWhere((element) => element.id == filterRequestId);
-    var proposals;
+        requests.indexWhere((Request element) => element.id == filterRequestId);
+    List<Proposal> proposals;
     if (requestIndex != -1) {
       proposals = requests[requestIndex].proposals;
     }
-    if (proposals != null && proposals.length > 0) {
-      proposals.forEach((proposal) {
+    if (proposals != null && proposals.isNotEmpty) {
+      proposals.forEach((Proposal proposal) {
         item = proposal.toProposalItem();
         proposalItems.add(item);
       });
@@ -126,15 +126,15 @@ class StreamService {
     }
 //    return proposalItems;
     _log.d(
-        "StreamService _convertRequestsToProposalItems(${proposalItems.length}) end.");
+        'StreamService _convertRequestsToProposalItems(${proposalItems.length}) end.');
   }
 
   List<MessageItem> _convertMessagesToMessageItems(List<Message> messages) {
-    _log.d("StreamService _convertMessagesToMessageItems()");
-    var messageItems = List<MessageItem>();
+    _log.d('StreamService _convertMessagesToMessageItems()');
+    var messageItems = <MessageItem>[];
     MessageItem item;
 
-    messages.forEach((message) {
+    messages.forEach((Message message) {
       item = message.toMessageItem();
       messageItems.add(item);
     });
@@ -150,10 +150,8 @@ class StreamService {
     listRequestItems.close();
     listProposalItems.close();
     listMessageItems.close();
-    _log.d("StreamService dispose");
+    _log.d('StreamService dispose');
   }
 }
 
-enum RefreshDataEvent {
-  LIST_REQUEST
-}
+enum RefreshDataEvent { LIST_REQUEST }

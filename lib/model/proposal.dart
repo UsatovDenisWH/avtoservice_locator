@@ -8,12 +8,10 @@ class Proposal {
   AutoService autoService;
   int price;
 
-  Proposal({@required AutoService autoService, @required int price})
-      : this.id = Utils.getRandomUUID(),
-        this.autoService = autoService,
-        this.price = price;
+  Proposal({@required this.autoService, @required this.price})
+      : this.id = Utils.getRandomUUID();
 
-  toProposalItem() {
+  ProposalItem toProposalItem() {
     return ProposalItem(
         id: id,
         name: autoService.name,

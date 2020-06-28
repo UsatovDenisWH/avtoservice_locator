@@ -68,8 +68,8 @@ class CurrentUserService {
 
   Future<String> _loadUserPhoneFromSPrefs() async {
     _log.d("CurrentUserService _loadUserPhoneFromSPrefs() start");
-    var prefs;
-    var phoneNumber;
+    SharedPreferences prefs;
+    String phoneNumber;
     try {
       prefs = await SharedPreferences.getInstance();
       phoneNumber = prefs.getString(_CURRENT_USER_PHONE);
@@ -82,7 +82,7 @@ class CurrentUserService {
 
   Future<bool> _saveUserPhoneToSPrefs({@required String phoneNumber}) async {
     _log.d("CurrentUserService _saveUserPhoneToSPrefs() start");
-    var prefs;
+    SharedPreferences prefs;
     try {
       prefs = await SharedPreferences.getInstance();
       prefs.setString(_CURRENT_USER_PHONE, phoneNumber);

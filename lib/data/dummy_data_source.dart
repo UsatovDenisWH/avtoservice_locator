@@ -14,7 +14,7 @@ class DummyDataSource implements IDataSource {
   @override
   Future<bool> initialize() async {
     _log.d("DummyDataSource initialize() start");
-    await Future.delayed(Duration(seconds: 2));
+    await Future<dynamic>.delayed(Duration(seconds: 2));
     _requests = DummyDataGenerator.generateRequests(); // List<Request>();
     _log.d("DummyDataSource initialize() end");
     return true;
@@ -22,25 +22,25 @@ class DummyDataSource implements IDataSource {
 
   @override
   Future<User> getUserByPhone({@required String phoneNumber}) async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
     return null;
   }
 
   @override
   Future<bool> updateUser({@required User user}) async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
     return true;
   }
 
   @override
   Future<bool> updateRequest({@required Request request}) async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
     return true;
   }
 
   @override
   Future<List<Request>> loadRequests({@required User user}) async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
     return _requests;
   }
 

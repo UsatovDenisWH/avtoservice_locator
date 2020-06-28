@@ -82,7 +82,7 @@ class Repository {
     if (requestId != null) {
       result = _requests.firstWhere((element) => element.id == requestId);
     } else if (proposalId != null) {
-      var proposal;
+      Proposal proposal;
       for (var req in _requests) {
         result = req;
         proposal = result.proposals?.firstWhere(

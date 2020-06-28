@@ -38,8 +38,10 @@ class RequestBloc extends BlocBase {
       _streamService.refreshData.add(RefreshDataEvent.LIST_REQUEST);
 
       var nextScreen = _screenBuilderService.getProposalScreenBuilder();
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => nextScreen(item.id)));
+      Navigator.push<Widget>(
+          context,
+          MaterialPageRoute<Widget>(
+              builder: (BuildContext context) => nextScreen(item.id)));
     }
   }
 

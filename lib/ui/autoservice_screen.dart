@@ -153,7 +153,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
             width: 8.0,
           ),
           Text(
-            "10% кэшбек",
+            '10% кэшбек',
             style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -218,7 +218,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
         padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Text("Описание",
+          child: Text('Описание',
               style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -230,19 +230,19 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
         child: Text(_autoService.description,
             style: TextStyle(fontSize: 16.0, color: Colors.black)));
 
-    var row6 = _feedbacks.length == 0
+    var row6 = _feedbacks.isEmpty
         ? SizedBox(height: 16)
         : Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                Text("Отзывы",
+                Text('Отзывы',
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black)),
-                Text("  $_carouselFeedbacksPageNumber/${_feedbacks.length}",
+                Text('  $_carouselFeedbacksPageNumber/${_feedbacks.length}',
                     style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -250,7 +250,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
               ],
             ));
 
-    var feedbacksCarousel = _feedbacks.length == 0
+    var feedbacksCarousel = _feedbacks.isEmpty
         ? SizedBox.shrink()
         : Column(
             children: <Widget>[
@@ -268,7 +268,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
                   )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: _feedbacks.map((item) {
+                children: _feedbacks.map((UserFeedback item) {
                   int index = _feedbacks.indexOf(item);
                   return Container(
                     width: 8.0,
@@ -326,7 +326,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
                             color: bDazzledBlueColor))),
                 Row(
                   children: <Widget>[
-                    Text("Оценка пользователя ",
+                    Text('Оценка пользователя ',
                         style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,
@@ -337,7 +337,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
                           borderRadius: BorderRadius.circular(4)),
                       padding: EdgeInsets.all(4.0),
                       child: Text(
-                        "${item.rating}",
+                        '${item.rating}',
                         style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,
@@ -351,13 +351,13 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
             SizedBox(
               height: 8,
             ),
-            Text("${item.text}",
+            Text('${item.text}',
                 style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.normal,
                     color: Colors.black)),
             SizedBox(height: 8),
-            Text("${DateFormat('dd.MM.yyyy').format(item.date)}",
+            Text(DateFormat('dd.MM.yyyy').format(item.date),
                 style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.normal,
@@ -366,13 +366,13 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
         ));
   }
 
-  _carouselFeedbacksPageChanged(int index, CarouselPageChangedReason reason) {
+  void _carouselFeedbacksPageChanged(int index, CarouselPageChangedReason reason) {
     setState(() {
       _carouselFeedbacksPageNumber = index + 1;
     });
   }
 
-  _carouselImagePageChanged(int index, CarouselPageChangedReason reason) {
+  void _carouselImagePageChanged(int index, CarouselPageChangedReason reason) {
     setState(() {
       _carouselImagePageNumber = index + 1;
     });

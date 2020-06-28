@@ -7,28 +7,35 @@ import 'package:avtoservicelocator/bloc/request_bloc.dart';
 import 'package:avtoservicelocator/bloc/startup_bloc.dart';
 import 'package:avtoservicelocator/model/proposal.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
 
 typedef BlocProvider<StartupBloc> StartupScreenBuilder();
 typedef BlocProvider<LoginBloc> LoginScreenBuilder();
 typedef BlocProvider<RequestBloc> RequestScreenBuilder();
 typedef BlocProvider<ProposalBloc> ProposalScreenBuilder(String requestId);
-typedef BlocProvider<AutoserviceBloc> AutoserviceScreenBuilder(String proposalId);
+typedef BlocProvider<AutoserviceBloc> AutoserviceScreenBuilder(
+    String proposalId);
 typedef BlocProvider<LocationBloc> LocationScreenBuilder(Proposal proposal);
 
 class ScreenBuilderService {
-  final Injector _injector;
-
   ScreenBuilderService({@required Injector injector})
       : this._injector = injector;
 
-  getLoginScreenBuilder() => _injector.get<LoginScreenBuilder>();
+  final Injector _injector;
 
-  getRequestScreenBuilder() => _injector.get<RequestScreenBuilder>();
+  Widget Function() getLoginScreenBuilder() =>
+      _injector.get<LoginScreenBuilder>();
 
-  getProposalScreenBuilder() => _injector.get<ProposalScreenBuilder>();
+  Widget Function() getRequestScreenBuilder() =>
+      _injector.get<RequestScreenBuilder>();
 
-  getAutoserviceScreenBuilder() => _injector.get<AutoserviceScreenBuilder>();
+  Widget Function(String) getProposalScreenBuilder() =>
+      _injector.get<ProposalScreenBuilder>();
 
-  getLocationScreenBuilder() => _injector.get<LocationScreenBuilder>();
+  Widget Function(String) getAutoserviceScreenBuilder() =>
+      _injector.get<AutoserviceScreenBuilder>();
+
+  Widget Function(Proposal) getLocationScreenBuilder() =>
+      _injector.get<LocationScreenBuilder>();
 }

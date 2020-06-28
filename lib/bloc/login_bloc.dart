@@ -26,8 +26,10 @@ class LoginBloc extends BlocBase {
     var result = await _currentUserService.setCurrentUser(newUser: newUser);
     if (result) {
       var nextScreen = _screenBuilderService.getRequestScreenBuilder();
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => nextScreen()));
+      Navigator.pushReplacement<Widget, Widget>(
+          context,
+          MaterialPageRoute<Widget>(
+              builder: (BuildContext context) => nextScreen()));
     }
   }
 
