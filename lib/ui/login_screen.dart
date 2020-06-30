@@ -13,13 +13,14 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoginButtonDisabled;
   final TextEditingController _phoneNumberController = TextEditingController();
 
+  @override
   void initState() {
     super.initState();
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
     _isLoginButtonDisabled = true;
     _phoneNumberController.addListener(_onChangePhoneNumberField);
-//    _phoneNumberController.text = "";
+//    _phoneNumberController.text = '';
   }
 
   @override
@@ -53,10 +54,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: "Номер телефона",
-                      hintText: "Номер телефона",
+                      labelText: 'Номер телефона',
+                      hintText: 'Номер телефона',
                       prefixIcon: Icon(Icons.phone_android),
-                      prefixText: "+7 ",
+                      prefixText: '+7 ',
                     ),
                     controller: _phoneNumberController,
                     inputFormatters: [
@@ -81,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   : BorderSide(color: Colors.blue, width: 2.0),
               padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0),
               onPressed: _isLoginButtonDisabled ? null : _submitCredential,
-              child: Text("Вход",
+              child: Text('Вход',
                   style: TextStyle(
                       color:
                           _isLoginButtonDisabled ? Colors.black54 : Colors.blue,
@@ -99,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submitCredential() {
     var phoneNumber = _phoneNumberController.text.toString();
     if (phoneNumber.length == 10) {
-      _bloc.loginUser(phoneNumber: "+7$phoneNumber");
+      _bloc.loginUser(phoneNumber: '+7$phoneNumber');
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:avtoservicelocator/data/i_data_source.dart';
+import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:avtoservicelocator/model/proposal.dart';
 import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/service/current_user_service.dart';
@@ -7,15 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_fimber/flutter_fimber.dart';
 
 class Repository {
-  IDataSource _dataSource;
-  CurrentUserService _currentUserService;
-  Future<bool> isInitialized;
-
-  List<Request> _requests;
-  Sink<List<Request>> _inListRequests;
-
-  final _log = FimberLog("AvtoService Locator");
-
   Repository(
       {@required IDataSource dataSource,
       @required CurrentUserService currentUserService,
@@ -26,46 +18,64 @@ class Repository {
     streamService.changeInDataSource.listen(onChangeInDataSource);
     streamService.refreshData.listen(onRefreshData);
     _inListRequests = streamService.listRequests.sink;
-    _log.d("Repository create");
+    _inListAutoServices = streamService.listAutoService.sink;
+    _log.d('Repository create');
   }
 
+  IDataSource _dataSource;
+  CurrentUserService _currentUserService;
+  Future<bool> isInitialized;
+  List<Request> _requests;
+  List<AutoService> _autoServices;
+
+  Sink<List<Request>> _inListRequests;
+  Sink<List<AutoService>> _inListAutoServices;
+
+  final FimberLog _log = FimberLog('AvtoService Locator');
+
   Future<bool> initialize() async {
-    _log.d("Repository initRepository() start");
+    _log.d('Repository initRepository() start');
     try {
       _dataSource.isInitialized = await _dataSource.initialize();
       _log.d(
-          "Repository initRepository() _dataSource.isInitialized = ${_dataSource.isInitialized}");
+          'Repository initRepository() _dataSource.isInitialized = ${_dataSource.isInitialized}');
       _currentUserService.isInitialized =
           await _currentUserService.initialize();
       _log.d(
-          "Repository initRepository() _currentUserService.isInitialized = ${_currentUserService.isInitialized}");
+          'Repository initRepository() _currentUserService.isInitialized = ${_currentUserService.isInitialized}');
       _log.d(
-          "Repository initRepository() _currentUserService.getCurrentUser().phoneNumber = ${_currentUserService.getCurrentUser()?.phoneNumber}");
+          'Repository initRepository() _currentUserService.getCurrentUser().phoneNumber = ${_currentUserService.getCurrentUser()?.phoneNumber}');
     } on Exception catch (error, stackTrace) {
       _handleException(error, stackTrace);
     }
+
 //    onChangeInDataSource(DataSourceEvent.ALL_REFRESH);
     _requests = await _dataSource.loadRequests(
         user: _currentUserService.getCurrentUser());
     _inListRequests.add(_requests);
+
+    _autoServices = await _dataSource.loadAutoServices(
+        user: _currentUserService.getCurrentUser());
+    _inListAutoServices.add(_autoServices);
+
     _log.d(
-        "Repository initRepository() _requests.length = ${_requests.length}");
-    _log.d("Repository initRepository() end");
+        'Repository initRepository() _requests.length = ${_requests.length}');
+    _log.d('Repository initRepository() end');
     return true;
   }
 
-  void onChangeInDataSource(DataSourceEvent event) async {
+  Future<void> onChangeInDataSource(DataSourceEvent event) async {
     if (event == DataSourceEvent.REQUESTS_REFRESH) {
       _requests = await _dataSource.loadRequests(
           user: _currentUserService.getCurrentUser());
       _inListRequests.add(_requests);
-      _log.d("Repository onChangeInDataSource REQUESTS_REFRESH");
+      _log.d('Repository onChangeInDataSource REQUESTS_REFRESH');
     } else if (event == DataSourceEvent.MESSAGES_REFRESH) {
-      _log.d("Repository onChangeInDataSource MESSAGES_REFRESH");
+      _log.d('Repository onChangeInDataSource MESSAGES_REFRESH');
     } else if (event == DataSourceEvent.ALL_REFRESH) {
       onChangeInDataSource(DataSourceEvent.REQUESTS_REFRESH);
       onChangeInDataSource(DataSourceEvent.MESSAGES_REFRESH);
-      _log.d("Repository onChangeInDataSource ALL_REFRESH");
+      _log.d('Repository onChangeInDataSource ALL_REFRESH');
     }
   }
 
@@ -76,7 +86,7 @@ class Repository {
   }
 
   Request getRequestById({String requestId, String proposalId}) {
-    assert(requestId != null || proposalId != null, "There are no props!");
+    assert(requestId != null || proposalId != null, 'There are no props!');
     Request result;
 
     if (requestId != null) {
@@ -107,8 +117,8 @@ class Repository {
 
   void updateRequest(
       {String requestId, String proposalId, RequestStatus newStatus}) {
-    assert(requestId != null || proposalId != null, "There are no props!");
-    assert(newStatus != null, "Nothing to change!");
+    assert(requestId != null || proposalId != null, 'There are no props!');
+    assert(newStatus != null, 'Nothing to change!');
     // Finding request
     var request = getRequestById(requestId: requestId, proposalId: proposalId);
     // Modifying request
@@ -120,10 +130,10 @@ class Repository {
   }
 
   void dispose() {
-    _log.d("Repository dispose");
+    _log.d('Repository dispose');
   }
 
   void _handleException(Exception error, StackTrace stackTrace) {
-    _log.d("Error in class Repository", ex: error, stacktrace: stackTrace);
+    _log.d('Error in class Repository', ex: error, stacktrace: stackTrace);
   }
 }

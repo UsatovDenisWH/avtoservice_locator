@@ -25,7 +25,7 @@ class _ProposalScreenState extends State<ProposalScreen> {
           title: Text("Ответы на заявку"),
         ),
         body: StreamBuilder(
-          stream: _bloc.outProposalItem,
+          stream: _bloc.outProposalItems,
           builder: (BuildContext context,
               AsyncSnapshot<List<ProposalItem>> snapshot) {
             if (snapshot.data == null || snapshot.data.isEmpty) {

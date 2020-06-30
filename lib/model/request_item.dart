@@ -1,6 +1,14 @@
 import 'package:avtoservicelocator/model/request.dart';
 
 class RequestItem {
+  RequestItem(
+      {this.id,
+      this.number,
+      this.status,
+      this.descCar,
+      this.descRequest,
+      this.descProposals});
+
   String id;
   int number;
   RequestStatus status;
@@ -8,31 +16,16 @@ class RequestItem {
   String descRequest;
   List<String> descProposals;
 
-  RequestItem(
-      {String id,
-      int number,
-      RequestStatus status,
-      String statusText,
-      String descCar,
-      String descRequest,
-      List<String> descProposals})
-      : this.id = id,
-        this.number = number,
-        this.status = status,
-        this.descCar = descCar,
-        this.descRequest = descRequest,
-        this.descProposals = descProposals;
-
   String get statusText {
-    var result = "";
+    var result = '';
     if (status == RequestStatus.ACTIVE) {
-      result = "Ожидание предложений";
+      result = 'Ожидание';
     } else if (status == RequestStatus.WORK) {
-      result = "Заявка в работе";
+      result = 'В работе';
     } else if (status == RequestStatus.DONE) {
-      result = "Заявка завершена";
+      result = 'Завершена';
     } else if (status == RequestStatus.CANCEL) {
-      result = "Заявка отменена";
+      result = 'Отменена';
     }
     return result;
   }

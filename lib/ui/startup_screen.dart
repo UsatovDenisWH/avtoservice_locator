@@ -36,12 +36,12 @@ class _StartupScreenState extends State<StartupScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "Auto Service\nLocator",
+                  'Auto Service\nLocator',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 40.0,
-                      fontFamily: "Roboto",
+                      fontFamily: 'Roboto',
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.none),
                 ),
@@ -54,16 +54,12 @@ class _StartupScreenState extends State<StartupScreen> {
               if (snapshot.hasData && snapshot.data) {
                 Future.microtask(() => _bloc.gotoNextScreen());
               }
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  CircularProgressIndicator(
+              return Align(
+                  alignment: Alignment(0.0, 0.3),
+                  child: CircularProgressIndicator(
                     strokeWidth: 2.0,
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                  SizedBox(height: 40.0)
-                ],
-              );
+                  ));
             },
           ),
         ],

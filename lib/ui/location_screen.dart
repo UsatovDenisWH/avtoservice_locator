@@ -15,10 +15,10 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   LocationBloc _bloc;
   Proposal _proposal;
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
   LatLng _target;
   MapType _currentMapType = MapType.hybrid;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
@@ -29,7 +29,7 @@ class _LocationScreenState extends State<LocationScreen> {
         position: _target,
         infoWindow: InfoWindow(
             title:
-                "${_proposal.autoService.name}, рейтинг ${_proposal.autoService.userRating}",
+                '${_proposal.autoService.name}, рейтинг ${_proposal.autoService.userRating}',
             snippet: _proposal.autoService.address),
         anchor: Offset(0.0, 1.0),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),

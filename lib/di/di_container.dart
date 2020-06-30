@@ -2,8 +2,10 @@ import 'package:avtoservicelocator/bloc/autoservice_bloc.dart';
 import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
 import 'package:avtoservicelocator/bloc/location_bloc.dart';
 import 'package:avtoservicelocator/bloc/login_bloc.dart';
+import 'package:avtoservicelocator/bloc/profile_bloc.dart';
 import 'package:avtoservicelocator/bloc/proposal_bloc.dart';
 import 'package:avtoservicelocator/bloc/request_bloc.dart';
+import 'package:avtoservicelocator/bloc/search_bloc.dart';
 import 'package:avtoservicelocator/bloc/startup_bloc.dart';
 import 'package:avtoservicelocator/data/dummy_data_source.dart';
 import 'package:avtoservicelocator/data/i_data_source.dart';
@@ -15,8 +17,10 @@ import 'package:avtoservicelocator/service/stream_service.dart';
 import 'package:avtoservicelocator/ui/autoservice_screen.dart';
 import 'package:avtoservicelocator/ui/location_screen.dart';
 import 'package:avtoservicelocator/ui/login_screen.dart';
+import 'package:avtoservicelocator/ui/profile_screen.dart';
 import 'package:avtoservicelocator/ui/proposal_screen.dart';
 import 'package:avtoservicelocator/ui/request_screen.dart';
+import 'package:avtoservicelocator/ui/search_screen.dart';
 import 'package:avtoservicelocator/ui/startup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
@@ -120,6 +124,26 @@ class DiContainer {
                   proposal: proposal,
                   screenBuilderService: i.get<ScreenBuilderService>(),
                   repository: i.get<Repository>()),
+            ),
+        isSingleton: true);
+
+    // Search screen
+    _injector.map<SearchScreenBuilder>(
+        (i) => () => BlocProvider<SearchBloc>(
+              child: SearchScreen(),
+              bloc: SearchBloc(
+                  screenBuilderService: i.get<ScreenBuilderService>(),
+                  streamService: i.get<StreamService>()),
+            ),
+        isSingleton: true);
+
+    // Profile screen
+    _injector.map<ProfileScreenBuilder>(
+        (i) => () => BlocProvider<ProfileBloc>(
+              child: ProfileScreen(),
+              bloc: ProfileBloc(
+                  currentUserService: i.get<CurrentUserService>(),
+                  screenBuilderService: i.get<ScreenBuilderService>()),
             ),
         isSingleton: true);
   }

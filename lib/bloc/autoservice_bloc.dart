@@ -15,7 +15,7 @@ class AutoserviceBloc extends BlocBase {
   String subscribeButtonText;
   BuildContext context;
 
-  final _log = FimberLog("AvtoService Locator");
+  final _log = FimberLog('AvtoService Locator');
 
   AutoserviceBloc(
       {@required String proposalId,
@@ -26,19 +26,22 @@ class AutoserviceBloc extends BlocBase {
         this.proposal = repository.getProposalById(proposalId: proposalId),
         this.request = repository.getRequestById(proposalId: proposalId) {
     _initSubscribeButton();
-    _log.d("AutoserviceBlock create");
+    _log.d('AutoserviceBlock create');
   }
 
   void onPressedSubscribeButton() {
     if (request.status == RequestStatus.ACTIVE) {
       _repository.updateRequest(
           requestId: request.id, newStatus: RequestStatus.WORK);
+      isSubscribeButtonClickable = false;
+/*
       var nextScreen = _screenBuilderService.getRequestScreenBuilder();
       Navigator.pushAndRemoveUntil<dynamic>(
           context,
           MaterialPageRoute<dynamic>(
               builder: (BuildContext context) => nextScreen()),
           (Route<dynamic> route) => false);
+*/
     }
   }
 
@@ -56,7 +59,7 @@ class AutoserviceBloc extends BlocBase {
 
   @override
   void dispose() {
-    _log.d("AutoserviceBlock dispose");
+    _log.d('AutoserviceBlock dispose');
   }
 
   void _initSubscribeButton() {
@@ -64,13 +67,13 @@ class AutoserviceBloc extends BlocBase {
 
     if (request.status == RequestStatus.ACTIVE) {
       subscribeButtonText =
-          "Записаться на ремонт за ${proposal.price} \u{20BD}";
+          'Записаться на ремонт за ${proposal.price} \u{20BD}';
     } else if (request.status == RequestStatus.WORK) {
-      subscribeButtonText = "Заявка в работе";
+      subscribeButtonText = 'Заявка в работе';
     } else if (request.status == RequestStatus.DONE) {
-      subscribeButtonText = "Заявка завершена";
+      subscribeButtonText = 'Заявка завершена';
     } else if (request.status == RequestStatus.CANCEL) {
-      subscribeButtonText = "Заявка отменена";
+      subscribeButtonText = 'Заявка отменена';
     }
   }
 }

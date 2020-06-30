@@ -1,7 +1,19 @@
 import 'package:avtoservicelocator/data/utils.dart';
+import 'package:avtoservicelocator/model/autoservice_item.dart';
 import 'package:avtoservicelocator/model/user_feedback.dart';
 
 class AutoService {
+  AutoService(
+      {this.name,
+      this.address,
+      this.location,
+      this.description,
+      this.photos,
+      this.userRating,
+      this.stars,
+      this.feedbacks})
+      : id = Utils.getRandomUUID();
+
   String id;
   String name;
   String address;
@@ -12,22 +24,15 @@ class AutoService {
   int stars;
   List<UserFeedback> feedbacks;
 
-  AutoService(
-      {String name,
-      String address,
-      String location,
-      String description,
-      List<String> photos,
-      double userRating,
-      int stars,
-      List<UserFeedback> feedbacks})
-      : this.id = Utils.getRandomUUID(),
-        this.name = name,
-        this.address = address,
-        this.location = location,
-        this.description = description,
-        this.photos = photos,
-        this.userRating = userRating,
-        this.stars = stars,
-        this.feedbacks = feedbacks;
+  AutoServiceItem toAutoServiceItem() {
+    return AutoServiceItem(
+        id: id,
+        name: name,
+        address: address,
+        location: location,
+        description: description,
+        userRating: userRating,
+        stars: stars,
+        counterFeedbacks: feedbacks?.length);
+  }
 }

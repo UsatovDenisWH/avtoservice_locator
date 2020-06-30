@@ -24,7 +24,7 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        title: Text("Заявки"),
+        title: Text('Заявки'),
       ),
       body: StreamBuilder(
         stream: _bloc.outRequestItems,
@@ -39,32 +39,35 @@ class _RequestScreenState extends State<RequestScreen> {
                 itemBuilder: (BuildContext context, int index) =>
                     RequestScreenItem(snapshot.data[index], _bloc),
                 separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(thickness: 5, color: Colors.black12,));
+                    const Divider(
+                      thickness: 5,
+                      color: Colors.black12,
+                    ));
           }
         },
       ),
       bottomNavigationBar: _bottomNavigationBar());
 
   BottomNavigationBar _bottomNavigationBar() => BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
-        backgroundColor: Colors.blue,
+        currentIndex: _bloc.bottomNavigationBarIndex,
+        onTap: (int index) => _bloc.onTapBottomNavigationBar(index),
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.black54,
+        selectedIconTheme: IconThemeData(size: 28),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
             icon: Icon(Icons.receipt),
-            title: Text("Заявки"),
+            title: Text('Заявки'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search, size: 32.0),
-            title: Text("Поиск СТО"),
+            icon: Icon(Icons.search),
+            title: Text('Поиск СТО'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message, size: 32.0),
-            title: Text("Сообщения"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_box, size: 32.0),
-            title: Text(""), //Профиль
+            icon: Icon(Icons.account_box),
+            title: Text('Профиль'),
           ),
         ],
       );

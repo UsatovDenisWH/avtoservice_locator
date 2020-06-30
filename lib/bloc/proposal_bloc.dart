@@ -9,7 +9,7 @@ class ProposalBloc extends BlocBase {
   final ScreenBuilderService _screenBuilderService;
   final StreamService _streamService;
 
-  Stream<List<ProposalItem>> outProposalItem;
+  Stream<List<ProposalItem>> outProposalItems;
   BuildContext context;
 
   final _log = FimberLog("AvtoService Locator");
@@ -21,7 +21,7 @@ class ProposalBloc extends BlocBase {
       : this._screenBuilderService = screenBuilderService,
         this._streamService = streamService {
     _streamService.filterRequestId = requestId;
-    outProposalItem = _streamService.listProposalItems.stream;
+    outProposalItems = _streamService.listProposalItems.stream;
     _log.d("ProposalBloc create");
   }
 

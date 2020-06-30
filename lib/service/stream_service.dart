@@ -1,6 +1,6 @@
 import 'package:avtoservicelocator/data/i_data_source.dart';
-import 'package:avtoservicelocator/model/message.dart';
-import 'package:avtoservicelocator/model/message_item.dart';
+import 'package:avtoservicelocator/model/autoservice.dart';
+import 'package:avtoservicelocator/model/autoservice_item.dart';
 import 'package:avtoservicelocator/model/proposal.dart';
 import 'package:avtoservicelocator/model/proposal_item.dart';
 import 'package:avtoservicelocator/model/request.dart';
@@ -9,46 +9,65 @@ import 'package:flutter_fimber/flutter_fimber.dart';
 import 'package:rxdart/rxdart.dart';
 
 class StreamService {
+  StreamService() {
+    filterRequestItems = '';
+    filterRequestId = '';
+    filterAutoService = '';
+    listRequests.listen(_convertRequestsToRequestItems);
+    listRequests.listen(_convertRequestsToProposalItems);
+    listAutoService
+        .map(_filterAutoService)
+        .map(_convertAutoServiceToAutoServiceItems)
+        .listen(listAutoServiceItems.add);
+    _log.d('StreamsService create');
+  }
+
   final changeInDataSource = PublishSubject<DataSourceEvent>();
   final refreshData = PublishSubject<RefreshDataEvent>();
 
   final listRequests = BehaviorSubject<List<Request>>();
   final listRequestItems = BehaviorSubject<List<RequestItem>>();
-
   final listProposalItems = BehaviorSubject<List<ProposalItem>>();
 
-  final listMessages = BehaviorSubject<List<Message>>();
-  final listMessageItems = BehaviorSubject<List<MessageItem>>();
+  final listAutoService = BehaviorSubject<List<AutoService>>();
+  final listAutoServiceItems = BehaviorSubject<List<AutoServiceItem>>();
 
   String filterRequestItems;
-  String filterMessageItems;
   String filterRequestId;
-
+  String filterAutoService;
   final _log = FimberLog('AvtoService Locator');
 
-  StreamService() {
-    filterRequestItems = '';
-    filterMessageItems = '';
-    filterRequestId = '';
+  List<AutoService> _filterAutoService(List<AutoService> inList) {
+    List<AutoService> outList;
 
-    listRequests.listen(_convertRequestsToRequestItems);
-    listRequests.listen(_convertRequestsToProposalItems);
+    if (filterAutoService.isEmpty) {
+      outList = inList;
+    } else {
+      outList = [];
+      String filter = filterAutoService.toLowerCase();
+      String name;
+      String address;
+      inList.forEach((AutoService item) {
+        name = item.name.toLowerCase();
+        address = item.address.toLowerCase();
+        if (name.contains(filter) || address.contains(filter)) {
+          outList.add(item);
+        }
+      });
+    }
+    return outList;
+  }
 
-//    listRequests
-//        .map(_convertRequestsToRequestItems)
-//        .map(_filterRequestItems)
-//        .listen(listRequestItems.add);
+  List<AutoServiceItem> _convertAutoServiceToAutoServiceItems(
+      List<AutoService> inList) {
+    List<AutoServiceItem> outList = [];
+    AutoServiceItem item;
 
-//    listRequests
-//        .map(_convertRequestsToProposalItems)
-//        .listen(listProposalItems.add);
-
-//    listMessages
-//        .map(_convertMessagesToMessageItems)
-//        .map(_filterMessageItems)
-//        .listen(listMessageItems.add);
-
-    _log.d('StreamsService create');
+    inList.forEach((AutoService autoService) {
+      item = autoService.toAutoServiceItem();
+      outList.add(item);
+    });
+    return outList;
   }
 
   List<RequestItem> _filterRequestItems(List<RequestItem> inRequestItems) {
@@ -71,26 +90,7 @@ class StreamService {
     return outRequestItems;
   }
 
-//  List<MessageItem> _filterMessageItems(List<MessageItem> inMessageItems) {
-//    List<MessageItem> outMessageItems;
-//
-//    if (filterMessageItems.isEmpty) {
-//      outMessageItems = inMessageItems;
-//    } else {
-//      outMessageItems = [];
-//      inMessageItems.forEach((item) {
-//        if (item.text
-//            .toLowerCase()
-//            .contains(filterMessageItems.toLowerCase())) {
-//          outMessageItems.add(item);
-//        }
-//      });
-//    }
-//    return outMessageItems;
-//  }
-
-  void /*List<RequestItem>*/ _convertRequestsToRequestItems(
-      List<Request> requests) {
+  void _convertRequestsToRequestItems(List<Request> requests) {
     _log.d('StreamService _convertRequestsToRequestItems() start');
     var requestItems = <RequestItem>[];
     RequestItem item;
@@ -101,12 +101,10 @@ class StreamService {
     });
     _log.d(
         'StreamService _convertRequestsToRequestItems(${requestItems.length})');
-//    return requestItems;
     listRequestItems.add(_filterRequestItems(requestItems));
   }
 
-  void /*List<ProposalItem>*/ _convertRequestsToProposalItems(
-      List<Request> requests) {
+  void _convertRequestsToProposalItems(List<Request> requests) {
     _log.d('StreamService _convertRequestsToProposalItems() start');
     var proposalItems = <ProposalItem>[];
     ProposalItem item;
@@ -124,21 +122,8 @@ class StreamService {
       });
       listProposalItems.add(proposalItems);
     }
-//    return proposalItems;
     _log.d(
         'StreamService _convertRequestsToProposalItems(${proposalItems.length}) end.');
-  }
-
-  List<MessageItem> _convertMessagesToMessageItems(List<Message> messages) {
-    _log.d('StreamService _convertMessagesToMessageItems()');
-    var messageItems = <MessageItem>[];
-    MessageItem item;
-
-    messages.forEach((Message message) {
-      item = message.toMessageItem();
-      messageItems.add(item);
-    });
-    return messageItems;
   }
 
   @override
@@ -146,10 +131,8 @@ class StreamService {
     changeInDataSource.close();
     refreshData.close();
     listRequests.close();
-    listMessages.close();
     listRequestItems.close();
     listProposalItems.close();
-    listMessageItems.close();
     _log.d('StreamService dispose');
   }
 }

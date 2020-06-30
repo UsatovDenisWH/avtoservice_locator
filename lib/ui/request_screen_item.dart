@@ -4,11 +4,11 @@ import 'package:avtoservicelocator/model/request_item.dart';
 import 'package:flutter/material.dart';
 
 class RequestScreenItem extends StatelessWidget {
+  RequestScreenItem(this._requestItem, this._bloc);
+
   final RequestItem _requestItem;
   final RequestBloc _bloc;
   final Color bDazzledBlueColor = Color.fromARGB(0xFF, 0x2E, 0x58, 0x94);
-
-  RequestScreenItem(this._requestItem, this._bloc);
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +16,32 @@ class RequestScreenItem extends StatelessWidget {
         padding: EdgeInsets.only(top: 4, bottom: 8),
         child: Row(
           children: <Widget>[
-            Text(
-              "#${_requestItem.number}. ",
+            Expanded(
+                child: Text(
+              '#${_requestItem.number}',
               style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
-                  color: _getStatusColor()),
-            ),
+                  color: Colors.black),
+            )),
+            Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(4),
+                  ),
+//              border: BoxBorder(),
+                  color: _getStatusColor(),
+                ),
+                padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+                child: Text(
+                  _requestItem.statusText,
+                  style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white),
+                ))
+/*
             Text(
               _requestItem.statusText,
               style: TextStyle(
@@ -31,16 +50,17 @@ class RequestScreenItem extends StatelessWidget {
                   color: _getStatusColor()),
               overflow: TextOverflow.ellipsis,
             )
+*/
           ],
         ));
 
     var row2 = Text(
-      "${_requestItem.descCar}",
+      _requestItem.descCar,
       style: TextStyle(fontSize: 20.0),
       overflow: TextOverflow.ellipsis,
     );
 
-    var row3 = Text("${_requestItem.descRequest}",
+    var row3 = Text(_requestItem.descRequest,
         style: TextStyle(fontSize: 16.0, color: Colors.black));
 
     var isProposals = _requestItem.descProposals.length == 2;
@@ -58,36 +78,37 @@ class RequestScreenItem extends StatelessWidget {
               width: 8.0,
             ),
             Text(
-              "${_requestItem.descProposals[0]}",
+              _requestItem.descProposals[0],
               style: TextStyle(
                   fontSize: 16.0,
                   color: isProposals ? Colors.black : Colors.black54,
                   fontWeight: FontWeight.bold),
             ),
-            isProposals
-                ? Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Icon(
-                        Icons.monetization_on,
+            if (isProposals)
+              Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 8.0,
+                  ),
+                  Icon(
+                    Icons.monetization_on,
+                    color: Colors.black,
+                    size: 16.0,
+                  ),
+                  SizedBox(
+                    width: 8.0,
+                  ),
+                  Text(
+                    _requestItem.descProposals[1],
+                    style: TextStyle(
+                        fontSize: 16.0,
                         color: Colors.black,
-                        size: 16.0,
-                      ),
-                      SizedBox(
-                        width: 8.0,
-                      ),
-                      Text(
-                        "${_requestItem.descProposals[1]}",
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      )
-                    ],
+                        fontWeight: FontWeight.bold),
                   )
-                : SizedBox.shrink(),
+                ],
+              )
+            else
+              SizedBox.shrink(),
           ],
         ));
 
@@ -123,16 +144,20 @@ class RequestScreenItem extends StatelessWidget {
                     ))),
             PopupMenuButton<SelectedItemMenu>(
               onSelected: (SelectedItemMenu result) {
-                _bloc.onSelectedItemMenu(result);
+                _bloc.onSelectedItemMenu(_requestItem, result);
               },
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<SelectedItemMenu>>[
-                PopupMenuItem<SelectedItemMenu>(
-                    value: SelectedItemMenu.CANCEL,
-                    child: Text("Отменить заявку"),
-                    enabled: (_requestItem.status == RequestStatus.ACTIVE ||
-                        _requestItem.status == RequestStatus.WORK))
-              ],
+              itemBuilder: (BuildContext context) {
+                if (_isPopupMenuItemEnabled()) {
+                  return <PopupMenuEntry<SelectedItemMenu>>[
+                    PopupMenuItem<SelectedItemMenu>(
+                        value: SelectedItemMenu.CANCEL,
+                        child: Text('Отменить заявку'),
+                        enabled: _isPopupMenuItemEnabled())
+                  ];
+                } else {
+                  return <PopupMenuEntry<SelectedItemMenu>>[];
+                }
+              },
             )
           ],
         ));
@@ -141,14 +166,19 @@ class RequestScreenItem extends StatelessWidget {
   Color _getStatusColor() {
     var color = Colors.black;
     if (_requestItem.status == RequestStatus.ACTIVE) {
-      color = bDazzledBlueColor;
-    } else if (_requestItem.status == RequestStatus.WORK) {
-      color = Colors.blue;
-    } else if (_requestItem.status == RequestStatus.DONE) {
       color = Colors.green;
+    } else if (_requestItem.status == RequestStatus.WORK) {
+      color = Colors.orange;
+    } else if (_requestItem.status == RequestStatus.DONE) {
+      color = bDazzledBlueColor;
     } else if (_requestItem.status == RequestStatus.CANCEL) {
       color = Colors.black38;
     }
     return color;
+  }
+
+  bool _isPopupMenuItemEnabled() {
+    return _requestItem.status == RequestStatus.ACTIVE ||
+        _requestItem.status == RequestStatus.WORK;
   }
 }

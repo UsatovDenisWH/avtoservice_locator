@@ -54,6 +54,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
         options: CarouselOptions(
             height: 250,
             viewportFraction: 1.0,
+            autoPlay: true,
             onPageChanged: _carouselImagePageChanged),
         items: _photos
             .map((item) => Container(
@@ -178,7 +179,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
             padding: EdgeInsets.all(20.0),
             child: Text(_bloc.subscribeButtonText,
                 style: TextStyle(fontSize: 16.0, color: Colors.white))),
-        onPressed: _bloc.onPressedSubscribeButton,
+        onPressed: _onPressedSubscribeButton,
       ),
     );
 
@@ -375,6 +376,12 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
   void _carouselImagePageChanged(int index, CarouselPageChangedReason reason) {
     setState(() {
       _carouselImagePageNumber = index + 1;
+    });
+  }
+
+  void _onPressedSubscribeButton() {
+    setState(() {
+      _bloc.onPressedSubscribeButton();
     });
   }
 }
