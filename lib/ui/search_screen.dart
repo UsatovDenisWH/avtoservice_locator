@@ -15,11 +15,13 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   SearchBloc _bloc;
-
   final Completer<GoogleMapController> _controller = Completer();
   LatLng _target = LatLng(47.232209, 38.887088);
   MapType _currentMapType = MapType.normal;
   Set<Marker> _markers = <Marker>{};
+
+  final TextEditingController _searchQueryController = TextEditingController();
+  String _searchQuery;
 
   @override
   void initState() {
@@ -27,6 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
     _bloc.outAutoServiceItems.listen(_updateMarkers);
+    _searchQueryController.addListener(_updateSearchQuery);
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -34,68 +37,113 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: Text('Поиск СТО'),
-      ),
-      body: DefaultTabController(
-          length: 2,
-          child: Column(
-            children: <Widget>[
-              Container(
+  Widget build(BuildContext context) {
+    var buttonMapType = Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.blue,
+        ),
+        child: IconButton(
+          icon: const Icon(Icons.layers),
+          color: Colors.white,
+          onPressed: _onTapButtonMapType,
+        ));
+
+    return Scaffold(
+        appBar: AppBar(
+          leading: Builder(
+            builder: (BuildContext context) => IconButton(
+              icon: const Icon(
+                Icons.search,
+                size: 28,
                 color: Colors.white,
-                child: TabBar(
-                  labelColor: Colors.blue,
-                  tabs: <Widget>[
-                    Tab(text: 'Список'),
-                    Tab(text: 'На карте'),
-                  ],
-                ),
               ),
-              Expanded(
-                child: Container(
-                  child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      StreamBuilder(
-                        stream: _bloc.outAutoServiceItems,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<AutoServiceItem>> snapshot) {
-                          if (snapshot.data == null || snapshot.data.isEmpty) {
-                            return Center(child: CircularProgressIndicator());
-                          } else {
-                            return ListView.separated(
-                                padding: EdgeInsets.all(0),
-                                itemCount: snapshot.data.length,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                        SearchScreenItem(
-                                            snapshot.data[index], _bloc),
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        const Divider(
-                                          thickness: 5,
-                                          color: Colors.black12,
-                                        ));
-                          }
-                        },
-                      ),
-                      GoogleMap(
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition:
-                            CameraPosition(target: _target, zoom: 12.0),
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: true,
-                        mapType: _currentMapType,
-                        markers: _markers,
-                      ),
+              onPressed: () {},
+            ),
+          ),
+          title: TextField(
+            controller: _searchQueryController,
+            textInputAction: TextInputAction.search,
+            enableInteractiveSelection: false,
+            decoration: InputDecoration(
+              hintText: 'Поиск СТО...',
+              border: InputBorder.none,
+              hintStyle: TextStyle(color: Colors.white70, fontSize: 20.0),
+            ),
+            style: TextStyle(color: Colors.white, fontSize: 20.0),
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: _clearSearchQuery,
+            ),
+          ],
+        ),
+        body: DefaultTabController(
+            length: 2,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  color: Colors.white,
+                  child: TabBar(
+                    labelColor: Colors.blue,
+                    tabs: <Widget>[
+                      Tab(text: 'Список'),
+                      Tab(text: 'На карте'),
                     ],
                   ),
                 ),
-              ),
-            ],
-          )),
-      bottomNavigationBar: _bottomNavigationBar());
+                Expanded(
+                  child: Container(
+                    child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        StreamBuilder(
+                          stream: _bloc.outAutoServiceItems,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<AutoServiceItem>> snapshot) {
+                            if (snapshot.data == null ||
+                                snapshot.data.isEmpty) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return ListView.separated(
+                                  padding: EdgeInsets.all(0),
+                                  itemCount: snapshot.data.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          SearchScreenItem(
+                                              snapshot.data[index], _bloc),
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                          const Divider(
+                                            thickness: 5,
+                                            color: Colors.black12,
+                                          ));
+                            }
+                          },
+                        ),
+                        Stack(children: <Widget>[
+                          GoogleMap(
+                            onMapCreated: _onMapCreated,
+                            initialCameraPosition:
+                                CameraPosition(target: _target, zoom: 12.0),
+                            myLocationEnabled: true,
+                            myLocationButtonEnabled: true,
+                            mapType: _currentMapType,
+                            markers: _markers,
+                          ),
+                          Align(
+                              alignment: Alignment(0.97, -0.925),
+                              child: buttonMapType),
+                        ])
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )),
+        bottomNavigationBar: _bottomNavigationBar());
+  }
 
   BottomNavigationBar _bottomNavigationBar() => BottomNavigationBar(
         currentIndex: _bloc.bottomNavigationBarIndex,
@@ -130,17 +178,37 @@ class _SearchScreenState extends State<SearchScreen> {
         position: Utils.stringToLatLng(location: item.location),
         infoWindow: InfoWindow(
             title: '${item.name}, рейтинг ${item.userRating}',
-            snippet: item.address),
+            snippet: item.address,
+            onTap: () {
+              _bloc.onTapAutoServiceItem(item: item);
+            }),
         anchor: Offset(0.0, 1.0),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-        onTap: () {
-          _bloc.onTapAutoServiceItem(item: item);
-        },
       ));
     });
 
     setState(() {
       _markers = markers;
+    });
+  }
+
+  void _updateSearchQuery() {
+    var newQuery = _searchQueryController.text;
+//    setState(() {
+      _searchQuery = newQuery;
+//    });
+    _bloc.setFilterAutoService(query: newQuery);
+  }
+
+  void _clearSearchQuery() {
+    _searchQueryController.clear();
+    _updateSearchQuery();
+  }
+
+  void _onTapButtonMapType() {
+    setState(() {
+      _currentMapType =
+          _currentMapType == MapType.normal ? MapType.hybrid : MapType.normal;
     });
   }
 }

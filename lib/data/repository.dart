@@ -82,6 +82,8 @@ class Repository {
   void onRefreshData(RefreshDataEvent event) {
     if (event == RefreshDataEvent.LIST_REQUEST) {
       _inListRequests.add(_requests);
+    } else if (event == RefreshDataEvent.LIST_AUTOSERVICES) {
+      _inListAutoServices.add(_autoServices);
     }
   }
 

@@ -17,7 +17,7 @@ class _LocationScreenState extends State<LocationScreen> {
   AutoService _autoService;
   final Completer<GoogleMapController> _controller = Completer();
   LatLng _target;
-  MapType _currentMapType = MapType.hybrid;
+  MapType _currentMapType = MapType.normal;
   final Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {

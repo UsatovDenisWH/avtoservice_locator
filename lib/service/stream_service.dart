@@ -133,8 +133,10 @@ class StreamService {
     listRequests.close();
     listRequestItems.close();
     listProposalItems.close();
+    listAutoService.close();
+    listAutoServiceItems.close();
     _log.d('StreamService dispose');
   }
 }
 
-enum RefreshDataEvent { LIST_REQUEST }
+enum RefreshDataEvent { LIST_REQUEST, LIST_AUTOSERVICES }

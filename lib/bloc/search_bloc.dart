@@ -12,20 +12,17 @@ class SearchBloc extends BlocBase {
       {@required ScreenBuilderService screenBuilderService,
       @required StreamService streamService})
       : _screenBuilderService = screenBuilderService,
+        _streamService = streamService,
         outAutoServiceItems = streamService.listAutoServiceItems.stream {
     _log.d('SearchBloc create');
   }
 
   final ScreenBuilderService _screenBuilderService;
+  final StreamService _streamService;
   Stream<List<AutoServiceItem>> outAutoServiceItems;
   BuildContext context;
   final int bottomNavigationBarIndex = 1;
   final FimberLog _log = FimberLog('AvtoService Locator');
-
-  @override
-  void dispose() {
-    _log.d('SearchBloc dispose');
-  }
 
   void onTapBottomNavigationBar(int index) {
     Widget Function() nextScreen;
@@ -49,5 +46,18 @@ class SearchBloc extends BlocBase {
         MaterialPageRoute<Widget>(
             builder: (BuildContext context) =>
                 nextScreen(null, item.id, null)));
+  }
+
+  void setFilterAutoService({String query}) {
+    _streamService.filterAutoService = query;
+    _streamService.refreshData.add(RefreshDataEvent.LIST_AUTOSERVICES);
+    _log.d('SearchBloc setFilterAutoService = $query');
+  }
+
+  @override
+  void dispose() {
+    _streamService.filterAutoService = '';
+    _streamService.refreshData.add(RefreshDataEvent.LIST_AUTOSERVICES);
+    _log.d('SearchBloc dispose');
   }
 }
