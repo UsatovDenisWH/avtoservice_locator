@@ -42,5 +42,12 @@ class SearchBloc extends BlocBase {
             type: PageTransitionType.fade, child: nextScreen()));
   }
 
-  void onTapAutoServiceItem({AutoServiceItem item}) {}
+  void onTapAutoServiceItem({AutoServiceItem item}) {
+    var nextScreen = _screenBuilderService.getAutoserviceScreenBuilder();
+    Navigator.push<Widget>(
+        context,
+        MaterialPageRoute<Widget>(
+            builder: (BuildContext context) =>
+                nextScreen(null, item.id, null)));
+  }
 }

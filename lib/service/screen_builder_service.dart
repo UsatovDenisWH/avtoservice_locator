@@ -7,7 +7,7 @@ import 'package:avtoservicelocator/bloc/proposal_bloc.dart';
 import 'package:avtoservicelocator/bloc/request_bloc.dart';
 import 'package:avtoservicelocator/bloc/search_bloc.dart';
 import 'package:avtoservicelocator/bloc/startup_bloc.dart';
-import 'package:avtoservicelocator/model/proposal.dart';
+import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
@@ -18,9 +18,9 @@ typedef RequestScreenBuilder = BlocProvider<RequestBloc> Function();
 typedef ProposalScreenBuilder = BlocProvider<ProposalBloc> Function(
     String requestId);
 typedef AutoserviceScreenBuilder = BlocProvider<AutoserviceBloc> Function(
-    String proposalId);
+    String requestId, String autoServiceId, int price);
 typedef LocationScreenBuilder = BlocProvider<LocationBloc> Function(
-    Proposal proposal);
+    AutoService autoService);
 typedef SearchScreenBuilder = BlocProvider<SearchBloc> Function();
 typedef ProfileScreenBuilder = BlocProvider<ProfileBloc> Function();
 
@@ -38,10 +38,10 @@ class ScreenBuilderService {
   Widget Function(String) getProposalScreenBuilder() =>
       _injector.get<ProposalScreenBuilder>();
 
-  Widget Function(String) getAutoserviceScreenBuilder() =>
+  Widget Function(String, String, int) getAutoserviceScreenBuilder() =>
       _injector.get<AutoserviceScreenBuilder>();
 
-  Widget Function(Proposal) getLocationScreenBuilder() =>
+  Widget Function(AutoService) getLocationScreenBuilder() =>
       _injector.get<LocationScreenBuilder>();
 
   Widget Function() getSearchScreenBuilder() =>

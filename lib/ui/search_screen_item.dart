@@ -15,21 +15,21 @@ class SearchScreenItem extends StatelessWidget {
 
     var row1 = Row(
       children: <Widget>[
-        Text(
-          '${_autoServiceItem.name}',
+        Expanded(
+            child: Text(
+          _autoServiceItem.name,
           style: TextStyle(
-              fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),
           overflow: TextOverflow.ellipsis,
-        ),
+        )),
+        Icon(
+          Icons.star,
+          color: Colors.black38,
+        )
       ],
     );
 
-    var row2 = Icon(
-      Icons.star,
-      color: Colors.black38,
-    );
-
-    var row3 = Row(
+    var row2 = Row(
       children: <Widget>[
         Icon(
           Icons.credit_card,
@@ -41,7 +41,7 @@ class SearchScreenItem extends StatelessWidget {
         Text(
           '10% кэшбек',
           style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 14.0,
               fontWeight: FontWeight.bold,
               color: Colors.black38),
           overflow: TextOverflow.ellipsis,
@@ -49,7 +49,7 @@ class SearchScreenItem extends StatelessWidget {
       ],
     );
 
-    var row4 = Row(
+    var row3 = Row(
       children: <Widget>[
         Icon(
           Icons.map,
@@ -61,7 +61,7 @@ class SearchScreenItem extends StatelessWidget {
         Text(
           _autoServiceItem.address,
           style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 14.0,
               fontWeight: FontWeight.bold,
               color: bDazzledBlueColor),
           overflow: TextOverflow.ellipsis,
@@ -69,7 +69,7 @@ class SearchScreenItem extends StatelessWidget {
       ],
     );
 
-    var row5 = Row(
+    var row4 = Row(
       children: <Widget>[
         Container(
           decoration: BoxDecoration(
@@ -78,7 +78,7 @@ class SearchScreenItem extends StatelessWidget {
           child: Text(
             _autoServiceItem.userRating.toString(),
             style: TextStyle(
-                fontSize: 18.0,
+                fontSize: 14.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.white),
           ),
@@ -89,7 +89,7 @@ class SearchScreenItem extends StatelessWidget {
         Text(
           'Рейтинг пользователей',
           style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 14.0,
               fontWeight: FontWeight.bold,
               color: bDazzledBlueColor),
           overflow: TextOverflow.ellipsis,
@@ -99,7 +99,7 @@ class SearchScreenItem extends StatelessWidget {
           Utils.counterFeedbacksToText(
               count: _autoServiceItem.counterFeedbacks),
           style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 14.0,
               fontWeight: FontWeight.bold,
               color: Colors.black38),
           overflow: TextOverflow.ellipsis,
@@ -120,25 +120,21 @@ class SearchScreenItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(
-                height: 8.0,
+                height: 0.0,
               ),
               row1,
               SizedBox(
-                height: 8.0,
+                height: 0.0,
               ),
               row2,
               SizedBox(
-                height: 8.0,
+                height: 0.0,
               ),
               row3,
               SizedBox(
-                height: 8.0,
+                height: 4.0,
               ),
               row4,
-              SizedBox(
-                height: 16.0,
-              ),
-              row5,
             ],
           )),
     );

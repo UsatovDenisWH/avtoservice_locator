@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
 import 'package:avtoservicelocator/bloc/location_bloc.dart';
 import 'package:avtoservicelocator/data/utils.dart';
-import 'package:avtoservicelocator/model/proposal.dart';
+import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -14,7 +14,7 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   LocationBloc _bloc;
-  Proposal _proposal;
+  AutoService _autoService;
   final Completer<GoogleMapController> _controller = Completer();
   LatLng _target;
   MapType _currentMapType = MapType.hybrid;
@@ -29,8 +29,8 @@ class _LocationScreenState extends State<LocationScreen> {
         position: _target,
         infoWindow: InfoWindow(
             title:
-                '${_proposal.autoService.name}, рейтинг ${_proposal.autoService.userRating}',
-            snippet: _proposal.autoService.address),
+                '${_autoService.name}, рейтинг ${_autoService.userRating}',
+            snippet: _autoService.address),
         anchor: Offset(0.0, 1.0),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       ));
@@ -42,8 +42,8 @@ class _LocationScreenState extends State<LocationScreen> {
     super.initState();
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
-    _proposal = _bloc.proposal;
-    _target = Utils.stringToLatLng(location: _proposal.autoService.location);
+    _autoService = _bloc.autoService;
+    _target = Utils.stringToLatLng(location: _autoService.location);
   }
 
   @override
@@ -77,6 +77,8 @@ class _LocationScreenState extends State<LocationScreen> {
       GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: _target, zoom: 17.0),
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
         mapType: _currentMapType,
         markers: _markers,
       ),

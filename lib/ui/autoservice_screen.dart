@@ -27,11 +27,10 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
     super.initState();
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
-    _autoService = _bloc.proposal.autoService;
-    _photos = _bloc.proposal.autoService.photos;
-    _feedbacks = _bloc.proposal.autoService.feedbacks == null
-        ? []
-        : _bloc.proposal.autoService.feedbacks;
+    _autoService = _bloc.autoService;
+    _photos = _bloc.autoService.photos;
+    _feedbacks =
+        _bloc.autoService.feedbacks == null ? [] : _bloc.autoService.feedbacks;
     _carouselFeedbacksPageNumber = 1;
     _carouselImagePageNumber = 1;
   }
@@ -79,15 +78,6 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
           );
         }).toList(),
       )
-
-//      Image.network(
-//        _autoService.photos[0],
-//        height: 250,
-//        fit: BoxFit.cover,
-//        errorBuilder:
-//            (BuildContext context, Object error, StackTrace stackTrace) =>
-//                Text(error.toString()),
-//      )
     ]);
 
     var row1 = Padding(
@@ -96,7 +86,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
           children: <Widget>[
             Expanded(
                 child: Text(
-              "${_autoService.name}",
+              _autoService.name,
               style: TextStyle(
                   fontSize: 22.0,
                   fontWeight: FontWeight.bold,
@@ -165,23 +155,26 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
       ),
     );
 
-    var isClickable = _bloc.isSubscribeButtonClickable;
-    var buttonSubscribe = Padding(
-      padding: EdgeInsets.all(16.0),
-      child: MaterialButton(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4))),
-        color: isClickable ? Colors.lightBlueAccent : Colors.black12,
-        minWidth: 350,
-        elevation: isClickable ? 2 : 0,
-        highlightElevation: isClickable ? 8 : 0,
-        child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text(_bloc.subscribeButtonText,
-                style: TextStyle(fontSize: 16.0, color: Colors.white))),
-        onPressed: _onPressedSubscribeButton,
-      ),
-    );
+    var isVisible = _bloc.isSubscribeButtonVisible;
+    var isClickable = _bloc.isSubscribeButtonEnable;
+    var buttonSubscribe = isVisible
+        ? Padding(
+            padding: EdgeInsets.all(16.0),
+            child: MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(4))),
+              color: isClickable ? Colors.lightBlueAccent : Colors.black12,
+              minWidth: 350,
+              elevation: isClickable ? 2 : 0,
+              highlightElevation: isClickable ? 8 : 0,
+              child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text(_bloc.subscribeButtonText,
+                      style: TextStyle(fontSize: 16.0, color: Colors.white))),
+              onPressed: _onPressedSubscribeButton,
+            ),
+          )
+        : SizedBox.shrink();
 
     var location = InkWell(
         onTap: _bloc.onTapAutoserviceLocation,
@@ -367,7 +360,8 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
         ));
   }
 
-  void _carouselFeedbacksPageChanged(int index, CarouselPageChangedReason reason) {
+  void _carouselFeedbacksPageChanged(
+      int index, CarouselPageChangedReason reason) {
     setState(() {
       _carouselFeedbacksPageNumber = index + 1;
     });

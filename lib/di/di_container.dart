@@ -10,7 +10,7 @@ import 'package:avtoservicelocator/bloc/startup_bloc.dart';
 import 'package:avtoservicelocator/data/dummy_data_source.dart';
 import 'package:avtoservicelocator/data/i_data_source.dart';
 import 'package:avtoservicelocator/data/repository.dart';
-import 'package:avtoservicelocator/model/proposal.dart';
+import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:avtoservicelocator/service/current_user_service.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:avtoservicelocator/service/stream_service.dart';
@@ -33,8 +33,6 @@ class DiContainer {
     _registerServices();
     _registerScreenBuilders();
   }
-
-//  static Injector getInjector() => _injector;
 
   static Widget getStartupScreen() {
     return (_injector.get<StartupScreenBuilder>())();
@@ -101,16 +99,20 @@ class DiContainer {
               bloc: ProposalBloc(
                   requestId: requestId,
                   screenBuilderService: i.get<ScreenBuilderService>(),
-                  streamService: i.get<StreamService>()),
+                  streamService: i.get<StreamService>(),
+                  repository: i.get<Repository>()),
             ),
         isSingleton: true);
 
     // Autoservice screen
     _injector.map<AutoserviceScreenBuilder>(
-        (i) => (String proposalId) => BlocProvider<AutoserviceBloc>(
+        (i) => (String requestId, String autoServiceId, int price) =>
+            BlocProvider<AutoserviceBloc>(
               child: AutoserviceScreen(),
               bloc: AutoserviceBloc(
-                  proposalId: proposalId,
+                  requestId: requestId,
+                  autoServiceId: autoServiceId,
+                  price: price,
                   screenBuilderService: i.get<ScreenBuilderService>(),
                   repository: i.get<Repository>()),
             ),
@@ -118,12 +120,11 @@ class DiContainer {
 
     // Location screen
     _injector.map<LocationScreenBuilder>(
-        (i) => (Proposal proposal) => BlocProvider<LocationBloc>(
+        (i) => (AutoService autoService) => BlocProvider<LocationBloc>(
               child: LocationScreen(),
               bloc: LocationBloc(
-                  proposal: proposal,
-                  screenBuilderService: i.get<ScreenBuilderService>(),
-                  repository: i.get<Repository>()),
+                  autoService: autoService,
+                  screenBuilderService: i.get<ScreenBuilderService>()),
             ),
         isSingleton: true);
 

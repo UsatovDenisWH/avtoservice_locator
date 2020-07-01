@@ -1,47 +1,47 @@
 import 'package:avtoservicelocator/bloc/common/base_bloc.dart';
 import 'package:avtoservicelocator/data/repository.dart';
-import 'package:avtoservicelocator/model/proposal.dart';
+import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fimber/flutter_fimber.dart';
 
 class AutoserviceBloc extends BlocBase {
-  final ScreenBuilderService _screenBuilderService;
-  final Repository _repository;
-  final Proposal proposal;
-  final Request request;
-  bool isSubscribeButtonClickable;
-  String subscribeButtonText;
-  BuildContext context;
-
-  final _log = FimberLog('AvtoService Locator');
-
   AutoserviceBloc(
-      {@required String proposalId,
+      {@required String requestId,
+      @required String autoServiceId,
+      @required this.price,
       @required ScreenBuilderService screenBuilderService,
       @required Repository repository})
-      : this._screenBuilderService = screenBuilderService,
-        this._repository = repository,
-        this.proposal = repository.getProposalById(proposalId: proposalId),
-        this.request = repository.getRequestById(proposalId: proposalId) {
+      : _request = requestId != null
+            ? repository.getRequestById(requestId: requestId)
+            : null,
+        autoService =
+            repository.getAutoServiceById(autoServiceId: autoServiceId),
+        _screenBuilderService = screenBuilderService,
+        _repository = repository {
     _initSubscribeButton();
     _log.d('AutoserviceBlock create');
   }
 
+  final Request _request;
+  final AutoService autoService;
+  final int price;
+  final ScreenBuilderService _screenBuilderService;
+  final Repository _repository;
+  bool isSubscribeButtonVisible;
+  bool isSubscribeButtonEnable;
+  String subscribeButtonText;
+
+  BuildContext context;
+
+  final FimberLog _log = FimberLog('AvtoService Locator');
+
   void onPressedSubscribeButton() {
-    if (request.status == RequestStatus.ACTIVE) {
+    if (_request.status == RequestStatus.ACTIVE) {
       _repository.updateRequest(
-          requestId: request.id, newStatus: RequestStatus.WORK);
-      isSubscribeButtonClickable = false;
-/*
-      var nextScreen = _screenBuilderService.getRequestScreenBuilder();
-      Navigator.pushAndRemoveUntil<dynamic>(
-          context,
-          MaterialPageRoute<dynamic>(
-              builder: (BuildContext context) => nextScreen()),
-          (Route<dynamic> route) => false);
-*/
+          requestId: _request.id, newStatus: RequestStatus.WORK);
+      isSubscribeButtonEnable = false;
     }
   }
 
@@ -50,7 +50,7 @@ class AutoserviceBloc extends BlocBase {
     Navigator.push<Widget>(
         context,
         MaterialPageRoute<Widget>(
-            builder: (BuildContext context) => nextScreen(proposal)));
+            builder: (BuildContext context) => nextScreen(autoService)));
   }
 
   void onTapButtonBack() {
@@ -63,17 +63,21 @@ class AutoserviceBloc extends BlocBase {
   }
 
   void _initSubscribeButton() {
-    isSubscribeButtonClickable = request.status == RequestStatus.ACTIVE;
+    if (_request == null) {
+      isSubscribeButtonVisible = false;
+    } else {
+      isSubscribeButtonVisible = true;
+      isSubscribeButtonEnable = _request.status == RequestStatus.ACTIVE;
 
-    if (request.status == RequestStatus.ACTIVE) {
-      subscribeButtonText =
-          'Записаться на ремонт за ${proposal.price} \u{20BD}';
-    } else if (request.status == RequestStatus.WORK) {
-      subscribeButtonText = 'Заявка в работе';
-    } else if (request.status == RequestStatus.DONE) {
-      subscribeButtonText = 'Заявка завершена';
-    } else if (request.status == RequestStatus.CANCEL) {
-      subscribeButtonText = 'Заявка отменена';
+      if (_request.status == RequestStatus.ACTIVE) {
+        subscribeButtonText = 'Записаться на ремонт за $price \u{20BD}';
+      } else if (_request.status == RequestStatus.WORK) {
+        subscribeButtonText = 'Заявка в работе';
+      } else if (_request.status == RequestStatus.DONE) {
+        subscribeButtonText = 'Заявка завершена';
+      } else if (_request.status == RequestStatus.CANCEL) {
+        subscribeButtonText = 'Заявка отменена';
+      }
     }
   }
 }

@@ -115,6 +115,15 @@ class Repository {
     return result;
   }
 
+  AutoService getAutoServiceById({@required String autoServiceId}) {
+    AutoService result;
+    if (autoServiceId != null) {
+      result =
+          _autoServices.firstWhere((element) => element.id == autoServiceId);
+    }
+    return result;
+  }
+
   void updateRequest(
       {String requestId, String proposalId, RequestStatus newStatus}) {
     assert(requestId != null || proposalId != null, 'There are no props!');

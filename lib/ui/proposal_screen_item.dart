@@ -4,10 +4,10 @@ import 'package:avtoservicelocator/model/proposal_item.dart';
 import 'package:flutter/material.dart';
 
 class ProposalScreenItem extends StatelessWidget {
+  ProposalScreenItem(this._proposalItem, this._bloc);
+
   final ProposalItem _proposalItem;
   final ProposalBloc _bloc;
-
-  ProposalScreenItem(this._proposalItem, this._bloc);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ProposalScreenItem extends StatelessWidget {
     var row1 = Row(
       children: <Widget>[
         Text(
-          "${_proposalItem.name}",
+          '${_proposalItem.name}',
           style: TextStyle(
               fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.black),
           overflow: TextOverflow.ellipsis,
@@ -34,7 +34,7 @@ class ProposalScreenItem extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
             transform: Matrix4.rotationZ(0.1),
             child: Text(
-              "\u{2022}  ${_proposalItem.price} \u{20BD}",
+              '\u{2022}  ${_proposalItem.price} \u{20BD}',
               style: TextStyle(
                   fontSize: 22.0,
                   fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class ProposalScreenItem extends StatelessWidget {
           width: 8.0,
         ),
         Text(
-          "10% кэшбек",
+          '10% кэшбек',
           style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
@@ -107,7 +107,7 @@ class ProposalScreenItem extends StatelessWidget {
           width: 8.0,
         ),
         Text(
-          "Рейтинг пользователей",
+          'Рейтинг пользователей',
           style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
