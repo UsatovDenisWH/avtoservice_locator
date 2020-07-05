@@ -1,4 +1,5 @@
 import 'package:avtoservicelocator/data/i_data_source.dart';
+import 'package:avtoservicelocator/model/address.dart';
 import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:avtoservicelocator/model/proposal.dart';
 import 'package:avtoservicelocator/model/request.dart';
@@ -27,6 +28,7 @@ class Repository {
   Future<bool> isInitialized;
   List<Request> _requests;
   List<AutoService> _autoServices;
+  List<Address> _addresses;
 
   Sink<List<Request>> _inListRequests;
   Sink<List<AutoService>> _inListAutoServices;
@@ -57,6 +59,8 @@ class Repository {
     _autoServices = await _dataSource.loadAutoServices(
         user: _currentUserService.getCurrentUser());
     _inListAutoServices.add(_autoServices);
+
+    _addresses = await _dataSource.loadAddresses();
 
     _log.d(
         'Repository initRepository() _requests.length = ${_requests.length}');
@@ -124,6 +128,34 @@ class Repository {
           _autoServices.firstWhere((element) => element.id == autoServiceId);
     }
     return result;
+  }
+
+  List<String> getAddressElements({String country, String region}) {
+    Set<String> result = <String>{};
+
+    if (country == null) {
+      _addresses.forEach((element) {
+        result.add(element.country);
+      });
+    } else if (region == null) {
+      _addresses.forEach((element) {
+        if (element.country == country) {
+          result.add(element.region);
+        }
+      });
+    }
+    return result.isEmpty ? null : result.toList();
+  }
+
+  Map<String, String> getCityAddress({String country, String region}) {
+    Map<String, String> result = <String, String>{};
+
+    _addresses.forEach((element) {
+      if (element.country == country && element.region == region) {
+        result[element.city] = '${element.lat},${element.lng}';
+      }
+    });
+    return result.isEmpty ? null : result;
   }
 
   void updateRequest(

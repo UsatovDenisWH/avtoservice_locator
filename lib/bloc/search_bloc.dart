@@ -1,5 +1,7 @@
 import 'package:avtoservicelocator/bloc/common/base_bloc.dart';
 import 'package:avtoservicelocator/model/autoservice_item.dart';
+import 'package:avtoservicelocator/model/user.dart';
+import 'package:avtoservicelocator/service/current_user_service.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:avtoservicelocator/service/stream_service.dart';
 import 'package:flutter/foundation.dart';
@@ -10,16 +12,19 @@ import 'package:page_transition/page_transition.dart';
 class SearchBloc extends BlocBase {
   SearchBloc(
       {@required ScreenBuilderService screenBuilderService,
-      @required StreamService streamService})
+      @required StreamService streamService,
+      @required CurrentUserService currentUserService})
       : _screenBuilderService = screenBuilderService,
         _streamService = streamService,
-        outAutoServiceItems = streamService.listAutoServiceItems.stream {
+        outAutoServiceItems = streamService.listAutoServiceItems.stream,
+        currentUser = currentUserService.getCurrentUser() {
     _log.d('SearchBloc create');
   }
 
   final ScreenBuilderService _screenBuilderService;
   final StreamService _streamService;
-  Stream<List<AutoServiceItem>> outAutoServiceItems;
+  final Stream<List<AutoServiceItem>> outAutoServiceItems;
+  final User currentUser;
   BuildContext context;
   final int bottomNavigationBarIndex = 1;
   final FimberLog _log = FimberLog('AvtoService Locator');

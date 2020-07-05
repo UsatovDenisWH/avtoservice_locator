@@ -134,7 +134,8 @@ class DiContainer {
               child: SearchScreen(),
               bloc: SearchBloc(
                   screenBuilderService: i.get<ScreenBuilderService>(),
-                  streamService: i.get<StreamService>()),
+                  streamService: i.get<StreamService>(),
+                  currentUserService: i.get<CurrentUserService>()),
             ),
         isSingleton: true);
 
@@ -144,7 +145,8 @@ class DiContainer {
               child: ProfileScreen(),
               bloc: ProfileBloc(
                   currentUserService: i.get<CurrentUserService>(),
-                  screenBuilderService: i.get<ScreenBuilderService>()),
+                  screenBuilderService: i.get<ScreenBuilderService>(),
+                  repository: i.get<Repository>()),
             ),
         isSingleton: true);
   }

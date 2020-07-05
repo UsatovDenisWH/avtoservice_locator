@@ -24,7 +24,11 @@ class Utils {
   }
 
   static LatLng stringToLatLng({@required String location}) {
-    var arr = location.split(",");
-    return LatLng(double.parse(arr[0]), double.parse(arr[1]));
+    LatLng result;
+    if (location != null && location.isNotEmpty) {
+      var arr = location.split(",");
+      result = LatLng(double.parse(arr[0]), double.parse(arr[1]));
+    }
+    return result;
   }
 }

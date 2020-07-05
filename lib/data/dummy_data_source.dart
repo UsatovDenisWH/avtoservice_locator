@@ -1,5 +1,6 @@
 import 'package:avtoservicelocator/data/dummy_data_generator.dart';
 import 'package:avtoservicelocator/data/i_data_source.dart';
+import 'package:avtoservicelocator/model/address.dart';
 import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/model/user.dart';
@@ -12,14 +13,16 @@ class DummyDataSource implements IDataSource {
 
   List<Request> _requests;
   List<AutoService> _autoServices;
+  List<Address> _addresses;
   final FimberLog _log = FimberLog('AvtoService Locator');
 
   @override
   Future<bool> initialize() async {
     _log.d('DummyDataSource initialize() start');
     await Future<dynamic>.delayed(Duration(seconds: 2));
-    _requests = DummyDataGenerator.generateRequests(); // List<Request>();
-    _autoServices = DummyDataGenerator.getAutoServices(); // List<Request>();
+    _requests = DummyDataGenerator.generateRequests();
+    _autoServices = DummyDataGenerator.getAutoServices();
+    _addresses = DummyDataGenerator.getAddresses();
     _log.d('DummyDataSource initialize() end');
     return true;
   }
@@ -52,6 +55,12 @@ class DummyDataSource implements IDataSource {
   Future<List<AutoService>> loadAutoServices({@required User user}) async {
     await Future<dynamic>.delayed(Duration(milliseconds: 500));
     return _autoServices;
+  }
+
+  @override
+  Future<List<Address>> loadAddresses() async {
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
+    return _addresses;
   }
 
   void _handleException(Exception error, StackTrace stackTrace) {

@@ -24,6 +24,11 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
+        leading: Icon(
+          Icons.receipt,
+          size: 28,
+          color: Colors.white,
+        ),
         title: Text('Заявки'),
       ),
       body: StreamBuilder(

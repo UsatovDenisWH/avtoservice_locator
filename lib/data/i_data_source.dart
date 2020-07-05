@@ -1,3 +1,4 @@
+import 'package:avtoservicelocator/model/address.dart';
 import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/model/user.dart';
@@ -17,6 +18,8 @@ abstract class IDataSource {
   Future<List<Request>> loadRequests({@required User user});
 
   Future<List<AutoService>> loadAutoServices({@required User user});
+
+  Future<List<Address>> loadAddresses();
 }
 
 enum DataSourceEvent { ALL_REFRESH, REQUESTS_REFRESH, MESSAGES_REFRESH }

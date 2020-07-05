@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:avtoservicelocator/data/i_data_source.dart';
 import 'package:avtoservicelocator/model/user.dart';
 import 'package:flutter/foundation.dart';
@@ -5,38 +7,51 @@ import 'package:flutter_fimber/flutter_fimber.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrentUserService {
-  User _currentUser;
-  IDataSource _dataSource;
-  bool isInitialized;
-
-  final _log = FimberLog("AvtoService Locator");
-  final _CURRENT_USER_PHONE = "CURRENT_USER_PHONE";
-
   CurrentUserService({@required IDataSource dataSource})
-      : this._dataSource = dataSource;
+      : _dataSource = dataSource;
+
+  final IDataSource _dataSource;
+  bool isInitialized;
+  User _currentUser;
+  final FimberLog _log = FimberLog('AvtoService Locator');
+  static const String _CURRENT_USER_PHONE = 'CURRENT_USER_PHONE';
+  static const String _CURRENT_USER = 'CURRENT_USER';
 
   Future<bool> initialize() async {
-    _log.d("CurrentUserService initialize() start");
-    var phoneNumber = await _loadUserPhoneFromSPrefs();
+    _log.d('CurrentUserService initialize() start');
+
+    _currentUser = await _loadUserFromSPrefs();
+
+    if (_currentUser?.phoneNumber != null) {
+      var _savedUser = await _dataSource.getUserByPhone(
+          phoneNumber: _currentUser.phoneNumber);
+      if (_savedUser != null) {
+        _currentUser = _savedUser;
+        _saveUserToSPrefs(user: _currentUser);
+      }
+    }
+
+/*    var phoneNumber = await _loadUserPhoneFromSPrefs();
     if (phoneNumber != null) {
       _currentUser = await _dataSource.getUserByPhone(phoneNumber: phoneNumber);
       if (_currentUser == null) {
         _currentUser = User(phoneNumber: phoneNumber);
         await _dataSource.updateUser(user: _currentUser);
       }
-    }
-    _log.d("CurrentUserService initialize() end");
+    }*/
+
+    _log.d('CurrentUserService initialize() end');
     return true;
   }
 
   User getCurrentUser() {
-    _log.d("CurrentUserService getCurrentUser()");
+    _log.d('CurrentUserService getCurrentUser()');
     return _currentUser;
   }
 
   Future<bool> setCurrentUser({@required User newUser}) async {
     assert(newUser.phoneNumber != null);
-    _log.d("CurrentUserService setCurrentUser()");
+    _log.d('CurrentUserService setCurrentUser()');
 
     var oldCurrentUser = _currentUser;
 
@@ -45,29 +60,37 @@ class CurrentUserService {
         _currentUser.phoneNumber != newUser.phoneNumber) {
       _currentUser =
           await _dataSource.getUserByPhone(phoneNumber: newUser.phoneNumber);
-      if (_currentUser == null) {
-        // new user not found in DataSource
-        _currentUser = newUser;
-      }
-      // save new user to SPrefs
-      await _saveUserPhoneToSPrefs(phoneNumber: _currentUser.phoneNumber);
+      // new user not found in DataSource
+      _currentUser ??= newUser;
     } else {
-      // update current user
+      // update current user details
       _currentUser = newUser;
     }
 
     // save new currentUser to DataSource
     var result = await _dataSource.updateUser(user: _currentUser);
-    if (!result) {
+
+    if (result) {
+      // save new currentUser to SPrefs
+      await _saveUserToSPrefs(user: _currentUser);
+    } else {
       // rollback currentUser
       _currentUser = oldCurrentUser;
-      await _saveUserPhoneToSPrefs(phoneNumber: _currentUser.phoneNumber);
     }
+
+
     return result;
   }
 
+  Future<bool> logoutCurrentUser() async {
+    _currentUser = null;
+    await _saveUserToSPrefs(user: _currentUser);
+/*    await _saveUserPhoneToSPrefs(phoneNumber: null);*/
+    return true;
+  }
+
   Future<String> _loadUserPhoneFromSPrefs() async {
-    _log.d("CurrentUserService _loadUserPhoneFromSPrefs() start");
+    _log.d('CurrentUserService _loadUserPhoneFromSPrefs() start');
     SharedPreferences prefs;
     String phoneNumber;
     try {
@@ -76,12 +99,12 @@ class CurrentUserService {
     } on Exception catch (error, stackTrace) {
       _handleException(error, stackTrace);
     }
-    _log.d("CurrentUserService _loadUserPhoneFromSPrefs() end");
+    _log.d('CurrentUserService _loadUserPhoneFromSPrefs() end');
     return phoneNumber;
   }
 
   Future<bool> _saveUserPhoneToSPrefs({@required String phoneNumber}) async {
-    _log.d("CurrentUserService _saveUserPhoneToSPrefs() start");
+    _log.d('CurrentUserService _saveUserPhoneToSPrefs() start');
     SharedPreferences prefs;
     try {
       prefs = await SharedPreferences.getInstance();
@@ -89,12 +112,46 @@ class CurrentUserService {
     } on Exception catch (error, stackTrace) {
       _handleException(error, stackTrace);
     }
-    _log.d("CurrentUserService _saveUserPhoneToSPrefs() end");
+    _log.d('CurrentUserService _saveUserPhoneToSPrefs() end');
     return true;
   }
 
   void _handleException(Exception error, StackTrace stackTrace) {
-    _log.d("Error in class CurrentUserService",
+    _log.d('Error in class CurrentUserService',
         ex: error, stacktrace: stackTrace);
+  }
+
+  Future<User> _loadUserFromSPrefs() async {
+    _log.d('CurrentUserService _loadUserFromSPrefs() start');
+    String jsonString;
+    User result;
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      jsonString = prefs.getString(_CURRENT_USER);
+    } on Exception catch (error, stackTrace) {
+      _handleException(error, stackTrace);
+    }
+    _log.d('CurrentUserService jsonString = $jsonString');
+    if (jsonString != null) {
+      var json = jsonDecode(jsonString) as Map<String, dynamic>;
+      result = User.fromJson(json);
+    }
+
+    _log.d('CurrentUserService _loadUserFromSPrefs() end');
+    return result;
+  }
+
+  Future<bool> _saveUserToSPrefs({@required User user}) async {
+    _log.d('CurrentUserService _saveUserToSPrefs() start');
+    String jsonString = jsonEncode(user);
+    _log.d('CurrentUserService jsonString = $jsonString');
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      prefs.setString(_CURRENT_USER, jsonString);
+    } on Exception catch (error, stackTrace) {
+      _handleException(error, stackTrace);
+    }
+    _log.d('CurrentUserService _saveUserToSPrefs() end');
+    return true;
   }
 }

@@ -16,7 +16,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   SearchBloc _bloc;
   final Completer<GoogleMapController> _controller = Completer();
-  LatLng _target = LatLng(47.232209, 38.887088);
+  LatLng _target;
   MapType _currentMapType = MapType.normal;
   Set<Marker> _markers = <Marker>{};
 
@@ -30,6 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _bloc.context = context;
     _bloc.outAutoServiceItems.listen(_updateMarkers);
     _searchQueryController.addListener(_updateSearchQuery);
+    _target = Utils.stringToLatLng(location: _bloc.currentUser.location);
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -51,15 +52,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          leading: Builder(
-            builder: (BuildContext context) => IconButton(
-              icon: const Icon(
-                Icons.search,
-                size: 28,
-                color: Colors.white,
-              ),
-              onPressed: () {},
-            ),
+          leading: Icon(
+            Icons.search,
+            size: 28,
+            color: Colors.white,
           ),
           title: TextField(
             controller: _searchQueryController,
@@ -195,7 +191,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void _updateSearchQuery() {
     var newQuery = _searchQueryController.text;
 //    setState(() {
-      _searchQuery = newQuery;
+    _searchQuery = newQuery;
 //    });
     _bloc.setFilterAutoService(query: newQuery);
   }

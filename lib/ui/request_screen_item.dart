@@ -41,16 +41,6 @@ class RequestScreenItem extends StatelessWidget {
                       fontWeight: FontWeight.normal,
                       color: Colors.white),
                 ))
-/*
-            Text(
-              _requestItem.statusText,
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: _getStatusColor()),
-              overflow: TextOverflow.ellipsis,
-            )
-*/
           ],
         ));
 
@@ -91,8 +81,8 @@ class RequestScreenItem extends StatelessWidget {
                     width: 8.0,
                   ),
                   Icon(
-                    Icons.monetization_on,
-                    color: Colors.black,
+                    Icons.local_offer,
+                    color: Colors.black87,
                     size: 16.0,
                   ),
                   SizedBox(
