@@ -1,5 +1,6 @@
 import 'package:avtoservicelocator/bloc/common/base_bloc.dart';
 import 'package:avtoservicelocator/data/repository.dart';
+import 'package:avtoservicelocator/model/car.dart';
 import 'package:avtoservicelocator/model/user.dart';
 import 'package:avtoservicelocator/service/current_user_service.dart';
 import 'package:avtoservicelocator/service/screen_builder_service.dart';
@@ -62,7 +63,45 @@ class ProfileBloc extends BlocBase {
         (route) => false);
   }
 
-  void updateProfile() {
+  void saveProfile() {
+    var _stubCars = [
+      Car(
+          mark: 'Hyundai',
+          model: 'Accent',
+          releaseDate: DateTime.parse('2007-05-15 13:27:00'),
+          vinCode: 'VINCODE',
+          stateNumber: 'A123AA',
+          odometer: 127000),
+      Car(
+          mark: 'Nissan',
+          model: '350Z',
+          releaseDate: DateTime.parse('2005-06-16 13:27:00'),
+          vinCode: 'JN1VINCODE',
+          stateNumber: 'C061CC',
+          odometer: 130000),
+      Car(
+          mark: 'Hyundai',
+          model: 'Accent',
+          releaseDate: DateTime.parse('2007-05-15 13:27:00'),
+          vinCode: 'VINCODE',
+          stateNumber: 'A123AA',
+          odometer: 127000),
+      Car(
+          mark: 'Nissan',
+          model: '350Z',
+          releaseDate: DateTime.parse('2005-06-16 13:27:00'),
+          vinCode: 'JN1VINCODE',
+          stateNumber: 'C061CC',
+          odometer: 130000),
+      Car(
+          mark: 'Nissan',
+          model: '350Z',
+          releaseDate: DateTime.parse('2005-06-16 13:27:00'),
+          vinCode: 'JN1VINCODE',
+          stateNumber: 'C061CC',
+          odometer: 130000)
+    ];
+//    currentUser.cars = _stubCars;
     _currentUserService.setCurrentUser(newUser: currentUser);
   }
 
@@ -86,12 +125,20 @@ class ProfileBloc extends BlocBase {
       } else {
         var secondPart = email.substring(indexMonkey + 1);
         var indexDot = secondPart.indexOf('.');
-        if (indexDot == -1 || indexDot == 0 || indexDot == secondPart.length - 1) {
+        if (indexDot == -1 ||
+            indexDot == 0 ||
+            indexDot == secondPart.length - 1) {
           result = false;
         }
       }
     }
     return result;
+  }
+
+  void deleteCar({Car car}) {
+    var index = currentUser.cars.indexOf(car);
+    currentUser.cars.removeAt(index);
+    saveProfile();
   }
 }
 

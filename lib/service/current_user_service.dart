@@ -46,7 +46,22 @@ class CurrentUserService {
 
   User getCurrentUser() {
     _log.d('CurrentUserService getCurrentUser()');
-    return _currentUser;
+
+    if (_currentUser == null) {
+      return null;
+    } else {
+      // return a copy of current user
+      return User(
+          id: _currentUser.id,
+          phoneNumber: _currentUser.phoneNumber,
+          name: _currentUser.name,
+          eMail: _currentUser.eMail,
+          country: _currentUser.country,
+          region: _currentUser.region,
+          city: _currentUser.city,
+          location: _currentUser.location,
+          cars: _currentUser.cars);
+    }
   }
 
   Future<bool> setCurrentUser({@required User newUser}) async {
@@ -77,7 +92,6 @@ class CurrentUserService {
       // rollback currentUser
       _currentUser = oldCurrentUser;
     }
-
 
     return result;
   }

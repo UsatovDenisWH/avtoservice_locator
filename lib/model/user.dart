@@ -51,7 +51,7 @@ class User {
       };
 
   Map<String, dynamic> _carsToJson() {
-    Map<String, dynamic> result;
+    Map<String, dynamic> result = <String, dynamic>{};
     if (cars != null && cars.isNotEmpty) {
       var i = 0;
       cars.forEach((car) {
@@ -59,16 +59,23 @@ class User {
         i++;
       });
     }
-    return result;
+    return result.isNotEmpty ? result : null;
   }
 
   List<Car> _carsFromJson(Map<String, dynamic> json) {
     if (json == null || json.isEmpty) {
       return null;
     } else {
+/*      var result = <Car>[];
+      for (int i = 0; i < json.length; i++) {
+        var carJson = json['$i'] as Map<String, dynamic>;
+        var car = Car.fromJson(carJson);
+        result.add(car);
+      }
+      return result;*/
       return Iterable<int>.generate(json.length)
           .toList()
-          .map((int index) => Car.fromJson(json[index] as Map<String, dynamic>))
+          .map((int index) => Car.fromJson(json['$index'] as Map<String, dynamic>))
           .toList();
     }
   }

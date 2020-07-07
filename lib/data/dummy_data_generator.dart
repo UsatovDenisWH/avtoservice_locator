@@ -12,14 +12,14 @@ class DummyDataGenerator {
     Car(
         mark: 'Hyundai',
         model: 'Accent',
-        releaseYear: DateTime.parse('2007-05-15 13:27:00'),
+        releaseDate: DateTime.parse('2007-05-15 13:27:00'),
         vinCode: 'VINCODE',
         stateNumber: 'A123AA',
         odometer: 127000),
     Car(
         mark: 'Nissan',
         model: '350Z',
-        releaseYear: DateTime.parse('2005-06-16 13:27:00'),
+        releaseDate: DateTime.parse('2005-06-16 13:27:00'),
         vinCode: 'JN1VINCODE',
         stateNumber: 'C061CC',
         odometer: 130000)

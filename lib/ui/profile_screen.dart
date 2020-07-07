@@ -1,5 +1,6 @@
 import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
 import 'package:avtoservicelocator/bloc/profile_bloc.dart';
+import 'package:avtoservicelocator/model/car.dart';
 import 'package:avtoservicelocator/model/user.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileBloc _bloc;
   User _user;
+  Car _carForDelete;
+  int _carsItemsCount;
 
   @override
   void initState() {
@@ -18,6 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
     _user = _bloc.currentUser;
+    _carsItemsCount = _user.cars?.length ?? 1;
   }
 
   @override
@@ -126,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )));
 
     var cars = InkWell(
-        onTap: () => _onTapListTile(item: ProfileListItem.CARS),
+        onTap: _showEditCarsDialog,
         child: Padding(
             padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
             child: ListTile(
@@ -233,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   setState(() {
                     _user.eMail = text == '' ? null : text;
                   });
-                  _bloc.updateProfile();
+                  _bloc.saveProfile();
                   Navigator.of(dialogContext).pop(); // Dismiss alert dialog
                 }
               },
@@ -276,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _user.region = null;
                     _user.city = null;
                   });
-                  _bloc.updateProfile();
+                  _bloc.saveProfile();
                   _bloc.updateReferenceList();
                 }
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
@@ -319,7 +323,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _user.region = result == '' ? null : result;
                     _user.city = null;
                   });
-                  _bloc.updateProfile();
+                  _bloc.saveProfile();
                   _bloc.updateReferenceList();
                 }
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
@@ -363,10 +367,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _user.location =
                         result == '' ? null : _bloc.mapCities[result];
                   });
-                  _bloc.updateProfile();
+                  _bloc.saveProfile();
 //                  _bloc.updateReferenceList();
                 }
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEditCarsDialog() {
+    showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setDialogState) {
+            return AlertDialog(
+              title: Text('Автомобили'),
+              content: Container(
+                  height: _carsItemsCount < 5 ? 75.00 * _carsItemsCount : 300,
+                  width: 400,
+                  child: ListView(
+                    children: _convertCarsToListItems(
+                        dialogStateSetter: setDialogState),
+                  )),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('ДОБАВИТЬ АВТО'),
+                  onPressed: () {},
+                ),
+                FlatButton(
+                  child: Text('ОК'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+        });
+  }
+
+  List<Widget> _convertCarsToListItems({StateSetter dialogStateSetter}) {
+    List<Widget> result = [];
+    if (_user.cars == null || _user.cars.isEmpty) {
+      result.add(Text('Нет автомобилей'));
+    } else {
+      _user.cars.forEach((element) {
+        result.add(InkWell(
+          onTap: () {
+            print('onTap:InkWell');
+          },
+          highlightColor: Colors.blue[100],
+          splashColor: Colors.blue[200],
+          child: ListTile(
+            onTap: () {
+              print('onTap:ListTile');
+            },
+            title: Text(element.getCarDescription()),
+            subtitle: Text('Пробег: ${element.odometer} км'),
+            trailing: IconButton(
+              icon: Icon(
+                Icons.delete,
+                size: 20,
+              ),
+              onPressed: () {
+                _carForDelete = element;
+                _showDeleteCarDialog(dialogStateSetter: dialogStateSetter);
+              },
+            ),
+          ),
+        ));
+      });
+    }
+    return result;
+  }
+
+  void _showDeleteCarDialog({StateSetter dialogStateSetter}) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Удалить авто?'),
+          content: Text(_carForDelete.getCarDescription()),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('ОК'),
+              onPressed: () {
+                _bloc.deleteCar(car: _carForDelete);
+                // update dialog window
+                dialogStateSetter(() {
+                  _carsItemsCount = _user.cars?.length ?? 1;
+                });
+                // update profile screen
+                super.setState(() {});
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('ОТМЕНА'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
               },
             ),
           ],

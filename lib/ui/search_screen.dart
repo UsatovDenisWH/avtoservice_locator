@@ -30,7 +30,12 @@ class _SearchScreenState extends State<SearchScreen> {
     _bloc.context = context;
     _bloc.outAutoServiceItems.listen(_updateMarkers);
     _searchQueryController.addListener(_updateSearchQuery);
-    _target = Utils.stringToLatLng(location: _bloc.currentUser.location);
+    if (_bloc.currentUser?.location == null) {
+      _target = Utils.stringToLatLng(location: _bloc.defaultLocation);
+    } else {
+      _target = Utils.stringToLatLng(location: _bloc.currentUser.location);
+    }
+
   }
 
   void _onMapCreated(GoogleMapController controller) {

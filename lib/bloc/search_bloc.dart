@@ -25,6 +25,7 @@ class SearchBloc extends BlocBase {
   final StreamService _streamService;
   final Stream<List<AutoServiceItem>> outAutoServiceItems;
   final User currentUser;
+  final String defaultLocation = '47.226830, 38.905112';
   BuildContext context;
   final int bottomNavigationBarIndex = 1;
   final FimberLog _log = FimberLog('AvtoService Locator');

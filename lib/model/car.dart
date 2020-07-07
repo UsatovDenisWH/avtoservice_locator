@@ -1,11 +1,12 @@
 import 'package:avtoservicelocator/data/utils.dart';
+import 'package:avtoservicelocator/model/extention/datetime_extension.dart';
 
 class Car {
   Car(
       {String id,
       this.mark,
       this.model,
-      this.releaseYear,
+      this.releaseDate,
       this.vinCode,
       this.stateNumber,
       this.odometer})
@@ -15,7 +16,7 @@ class Car {
       : id = json['id'] as String,
         mark = json['mark'] as String,
         model = json['model'] as String,
-        releaseYear = json['releaseYear'] as DateTime,
+        releaseDate = DateTime.parse(json['releaseDate'] as String),
         vinCode = json['vinCode'] as String,
         stateNumber = json['stateNumber'] as String,
         odometer = json['odometer'] as int;
@@ -23,7 +24,7 @@ class Car {
   String id;
   String mark;
   String model;
-  DateTime releaseYear;
+  DateTime releaseDate;
   String vinCode;
   String stateNumber;
   int odometer;
@@ -32,11 +33,11 @@ class Car {
         'id': id,
         'mark': mark,
         'model': model,
-        'releaseYear': releaseYear,
+        'releaseDate': releaseDate.dateToString(),
         'vinCode': vinCode,
         'stateNumber': stateNumber,
         'odometer': odometer
       };
 
-  String getCarDescription() => '$mark $model (${releaseYear.year})';
+  String getCarDescription() => '$mark $model (${releaseDate.year})';
 }
