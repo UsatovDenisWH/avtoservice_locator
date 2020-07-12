@@ -2,7 +2,11 @@ import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
 import 'package:avtoservicelocator/bloc/profile_bloc.dart';
 import 'package:avtoservicelocator/model/car.dart';
 import 'package:avtoservicelocator/model/user.dart';
+import 'package:avtoservicelocator/model/extention/datetime_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_holo_date_picker/date_picker.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -227,6 +231,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ? null
                   : 'Неверный формат e-mail';
             },
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
           ),
           actions: <Widget>[
             FlatButton(
@@ -281,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _user.city = null;
                   });
                   _bloc.saveProfile();
-                  _bloc.updateReferenceList();
+                  _bloc.updateAddressReferenceList();
                 }
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
               },
@@ -324,7 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _user.city = null;
                   });
                   _bloc.saveProfile();
-                  _bloc.updateReferenceList();
+                  _bloc.updateAddressReferenceList();
                 }
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
               },
@@ -368,7 +374,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         result == '' ? null : _bloc.mapCities[result];
                   });
                   _bloc.saveProfile();
-//                  _bloc.updateReferenceList();
                 }
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
               },
@@ -391,14 +396,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               content: Container(
                   height: _carsItemsCount < 5 ? 75.00 * _carsItemsCount : 300,
                   width: 400,
-                  child: ListView(
-                    children: _convertCarsToListItems(
-                        dialogStateSetter: setDialogState),
+                  child: Scrollbar(
+                    child: ListView(
+                      children:
+                          _convertCarsToListItems(stateSetter: setDialogState),
+                    ),
                   )),
               actions: <Widget>[
                 FlatButton(
                   child: Text('ДОБАВИТЬ АВТО'),
-                  onPressed: () {},
+                  onPressed: () {
+                    _showAddCarsDialog(stateSetter: setDialogState);
+                  },
                 ),
                 FlatButton(
                   child: Text('ОК'),
@@ -412,7 +421,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
-  List<Widget> _convertCarsToListItems({StateSetter dialogStateSetter}) {
+  List<Widget> _convertCarsToListItems({StateSetter stateSetter}) {
     List<Widget> result = [];
     if (_user.cars == null || _user.cars.isEmpty) {
       result.add(Text('Нет автомобилей'));
@@ -437,7 +446,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               onPressed: () {
                 _carForDelete = element;
-                _showDeleteCarDialog(dialogStateSetter: dialogStateSetter);
+                _showDeleteCarDialog(stateSetter: stateSetter);
               },
             ),
           ),
@@ -447,7 +456,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return result;
   }
 
-  void _showDeleteCarDialog({StateSetter dialogStateSetter}) {
+  void _showDeleteCarDialog({StateSetter stateSetter}) {
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -457,11 +466,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           content: Text(_carForDelete.getCarDescription()),
           actions: <Widget>[
             FlatButton(
-              child: Text('ОК'),
+              child: Text('УДАЛИТЬ'),
               onPressed: () {
                 _bloc.deleteCar(car: _carForDelete);
                 // update dialog window
-                dialogStateSetter(() {
+                stateSetter(() {
                   _carsItemsCount = _user.cars?.length ?? 1;
                 });
                 // update profile screen
@@ -477,6 +486,164 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         );
+      },
+    );
+  }
+
+  void _showAddCarsDialog({StateSetter stateSetter}) {
+    String mark;
+    String model;
+    DateTime releaseDate;
+    String vinCode;
+    String stateNumber;
+    int odometer;
+
+    var releaseDateController = TextEditingController();
+    var vinCodeController = TextEditingController();
+    var stateNumberController = TextEditingController();
+    var odometerController = TextEditingController();
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setDialogState) {
+          return AlertDialog(
+            title: Text('Добавить авто:'),
+            content: Container(
+              height: 350,
+//              width: 400,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    DropdownButton<String>(
+                      hint: Text('Марка'),
+                      value: mark,
+                      elevation: 4,
+                      isExpanded: true,
+                      items: _bloc.listCarMarks
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                            child: Text(value), value: value);
+                      }).toList(),
+                      onChanged: (String value) {
+                        setDialogState(() {
+                          mark = value;
+                          model = null;
+                        });
+                        _bloc.updateCarReferenceList(carMark: value);
+                      },
+                    ),
+                    DropdownButton<String>(
+                      hint: Text('Модель'),
+                      value: model,
+                      elevation: 4,
+                      isExpanded: true,
+                      items: _bloc.listCarModels
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                            child: Text(value), value: value);
+                      }).toList(),
+                      onChanged: (String value) {
+                        setDialogState(() {
+                          model = value;
+                        });
+                      },
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Дата выпуска'),
+                      readOnly: true,
+                      controller: releaseDateController,
+                      onTap: () async {
+                        var datePicker = await DatePicker.showSimpleDatePicker(
+                            context,
+                            titleText: 'Выберите дату',
+                            confirmText: 'ОК',
+                            cancelText: 'Отмена',
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1950),
+                            lastDate: DateTime.now(),
+                            dateFormat: 'dd-MMMM-yyyy',
+                            locale: DateTimePickerLocale.ru,
+                            looping: true);
+                        setDialogState(() {
+                          releaseDate = datePicker;
+                          if (releaseDate != null) {
+                            releaseDateController.text =
+                                releaseDate.dateToStringForHuman();
+                          }
+                        });
+                      },
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Пробег, км'),
+                      controller: odometerController,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () {
+                        odometer = int.parse(odometerController.text);
+                      },
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Гос. номер'),
+                      controller: stateNumberController,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter(RegExp(r'\w+')) // digits+alphabet
+                      ],
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () {
+                        stateNumber = stateNumberController.text.toString();
+                      },
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'VIN'),
+                      controller: vinCodeController,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: () {
+                        vinCode = vinCodeController.text.toString();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ДОБАВИТЬ'),
+                onPressed: () {
+                  _bloc.addCar(
+                      mark: mark,
+                      model: model,
+                      releaseDate: releaseDate,
+                      vinCode: vinCode,
+                      stateNumber: stateNumber,
+                      odometer: odometer);
+                  _bloc.listCarModels = [];
+                  // update dialog window
+                  stateSetter(() {
+                    _carsItemsCount = _user.cars?.length ?? 1;
+                  });
+                  // update profile screen
+                  super.setState(() {});
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('ОТМЕНА'),
+                onPressed: () {
+                  _bloc.listCarModels = [];
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+            ],
+          );
+        });
       },
     );
   }

@@ -29,6 +29,7 @@ class Repository {
   List<Request> _requests;
   List<AutoService> _autoServices;
   List<Address> _addresses;
+  Map<String, List<String>> _carReferenceList;
 
   Sink<List<Request>> _inListRequests;
   Sink<List<AutoService>> _inListAutoServices;
@@ -61,6 +62,7 @@ class Repository {
     _inListAutoServices.add(_autoServices);
 
     _addresses = await _dataSource.loadAddresses();
+    _carReferenceList = await _dataSource.loadCarReferenceList();
 
     _log.d(
         'Repository initRepository() _requests.length = ${_requests.length}');
@@ -158,6 +160,16 @@ class Repository {
     return result.isEmpty ? null : result;
   }
 
+  List<String> getCarElements({String carMark}) {
+    List<String> result = [];
+    if (carMark == null) {
+      result = _carReferenceList.keys.toList();
+    } else {
+      result = _carReferenceList[carMark];
+    }
+    return result;
+  }
+
   void updateRequest(
       {String requestId, String proposalId, RequestStatus newStatus}) {
     assert(requestId != null || proposalId != null, 'There are no props!');
@@ -179,4 +191,6 @@ class Repository {
   void _handleException(Exception error, StackTrace stackTrace) {
     _log.d('Error in class Repository', ex: error, stacktrace: stackTrace);
   }
+
+
 }

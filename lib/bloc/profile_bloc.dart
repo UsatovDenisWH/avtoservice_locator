@@ -18,7 +18,7 @@ class ProfileBloc extends BlocBase {
         _screenBuilderService = screenBuilderService,
         _repository = repository,
         currentUser = currentUserService.getCurrentUser() {
-    updateReferenceList();
+    initReferenceList();
     _log.d('ProfileBloc create');
   }
 
@@ -28,14 +28,38 @@ class ProfileBloc extends BlocBase {
   final User currentUser;
   List<String> listCountries;
   List<String> listRegions;
+  List<String> listCarMarks;
+  List<String> listCarModels;
   Map<String, String> mapCities;
   BuildContext context;
   final int bottomNavigationBarIndex = 2;
   final FimberLog _log = FimberLog('AvtoService Locator');
 
-  @override
-  void dispose() {
-    _log.d('ProfileBloc dispose');
+  void initReferenceList() {
+    listCountries = _repository.getAddressElements();
+    if (currentUser.country != null) {
+      listRegions =
+          _repository.getAddressElements(country: currentUser.country);
+    }
+    if (currentUser.region != null) {
+      mapCities = _repository.getCityAddress(
+          country: currentUser.country, region: currentUser.region);
+    }
+    listCarMarks = _repository.getCarElements();
+    listCarModels = [];
+  }
+
+  void updateAddressReferenceList() {
+    listCountries = _repository.getAddressElements();
+    listRegions =
+        _repository.getAddressElements(country: currentUser.country ?? '');
+    mapCities = _repository.getCityAddress(
+        country: currentUser.country ?? '', region: currentUser.region ?? '');
+  }
+
+  void updateCarReferenceList({String carMark}) {
+    listCarModels = _repository.getCarElements(carMark: carMark ?? '');
+    _log.d('ProfileBloc.updateCarReferenceList($carMark): $listCarModels');
   }
 
   void onTapBottomNavigationBar(int index) {
@@ -105,18 +129,17 @@ class ProfileBloc extends BlocBase {
     _currentUserService.setCurrentUser(newUser: currentUser);
   }
 
-  void updateReferenceList() {
-    listCountries = _repository.getAddressElements();
-    listRegions =
-        _repository.getAddressElements(country: currentUser.country ?? '');
-    mapCities = _repository.getCityAddress(
-        country: currentUser.country ?? '', region: currentUser.region ?? '');
-  }
-
   bool isValidEmail({String email}) {
     var result = true;
+    var regExp = RegExp(
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+        /*r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}',*/
+        caseSensitive: false,
+        multiLine: false);
 
-    if (email != null && email.isNotEmpty) {
+    result = regExp.hasMatch(email);
+
+/*    if (email != null && email.isNotEmpty) {
       var indexMonkey = email.indexOf('@');
       if (indexMonkey == -1 ||
           indexMonkey == 0 ||
@@ -131,7 +154,7 @@ class ProfileBloc extends BlocBase {
           result = false;
         }
       }
-    }
+    }*/
     return result;
   }
 
@@ -139,6 +162,30 @@ class ProfileBloc extends BlocBase {
     var index = currentUser.cars.indexOf(car);
     currentUser.cars.removeAt(index);
     saveProfile();
+  }
+
+  void addCar(
+      {String mark,
+      String model,
+      DateTime releaseDate,
+      String vinCode,
+      String stateNumber,
+      int odometer}) {
+    var newCar = Car(
+        mark: mark,
+        model: model,
+        releaseDate: releaseDate,
+        vinCode: vinCode,
+        stateNumber: stateNumber,
+        odometer: odometer);
+    currentUser.cars ??= [];
+    currentUser.cars.add(newCar);
+    saveProfile();
+  }
+
+  @override
+  void dispose() {
+    _log.d('ProfileBloc dispose');
   }
 }
 

@@ -223,6 +223,34 @@ class DummyDataGenerator {
     }).toSet().toList();
   }
 
+  static Map<String, List<String>> getCarReferenceList() => <String, List<String>> {
+    'Audi': ['A1','A2','A3','A4','A4 Allroad Quattro','A5','A6','A7','A8','Allroad','E-Tron','Q2','Q3','Q5','Q7','Q8','R8','RS Q3','RS3','RS4','RS5','RS6','RS7','S3','S4','S5','S6','S7','S8','SQ2','SQ5','SQ7','SQ8','TT','TT RS','TTS'],
+    'BMW': ['1 series','2 series','3 series','4 series','5 series','6 series','7 series','8 series','i3','i8','M2','M3','M4','M5','M6','X1','X2','X3','X3 M','X4','X4 M','X5','X5 M','X6','X6 M','X7','Z3','Z4','Z8'],
+    'Chevrolet': ['Astro','Avalanche','Aveo','Blazer','Camaro','Captiva','Cavalier','Cobalt','Colorado','Corvette','Cruze','Epica','Equinox','Express','HHR','Impala','Lacetti','Lanos','Malibu','Monte Carlo','Niva','Orlando','Rezzo','Silverado','Silverado 2500 HD','Spark','SSR','Suburban','Tahoe','TrailBlazer','Traverse','Trax','Uplander','Venture'],
+    'Daihatsu': ['Applause','Cast','Copen','Cuore','Gran Move','Luxio','Materia','Mebius','Move','Rocky','Sirion','Terios','Trevis','YRV'],
+    'Ford': ['B-Max','C-Max','Cougar','Crown Victoria','EcoSport','Edge','Escape','Excursion','Expedition','Explorer','Explorer Sport Trac','F-150','F-250','F-350','Falcon','Fiesta','Five Hundred','Flex','Focus','Focus Active','Freestar','Freestyle','Fusion','Galaxy','Ka','Kuga','Maverick','Mondeo','Mustang','Mustang Shelby GT350','Mustang Shelby GT500','Puma','Ranger','S-Max','Taurus','Taurus X','Thunderbird','Tourneo Connect','Transit','Transit Connect'],
+    'GAZ': ['3102','31105','Siber','Sobol'],
+    'Honda': ['Accord','Amaze','City','Civic','CR-V','CR-Z','Crosstour','Element','Fit','FR-V','HR-V','HR-V II (GJ)','Insight','Jade','Jazz','Legend','Odyssey','Pilot','Prelude','Ridgeline','S2000','Shuttle','Stream','Vezel'],
+    'Hyundai': ['Accent','Atos Prime','Azera','Centennial','Creta','Elantra','Entourage','Eon','Equus','Galloper','Genesis','Genesis Coupe','Getz','Grandeur','H-1','i10','i20','i30','i30 N','i40','Ioniq','ix20','ix35','Kona','Matrix','Palisade','Porter','Santa Fe','Solaris','Sonata','Terracan','Trajet','Tucson','Veloster','Veracruz','Verna','Xcent','XG'],
+    'Kia': ['Carens','Carnival','Ceed','Cerato','Clarus','Forte','K900','Magentis','Mohave','Niro','Opirus','Optima','Picanto','ProCeed','Quoris','Ray','Rio','Rio X-Line','Seltos','Shuma','Sorento','Sorento Prime','Soul','Spectra','Sportage','Stinger','Stonic','Telluride','Venga'],
+    'Lexus': ['CT','ES','GS','GX','HS','IS','LC','LFA','LS','LX','NX','RC','RX','SC','UX'],
+    'Mazda': ['2','3','323','5','6','626','B-Series','BT-50','CX-3','CX-5','CX-7','CX-9','MPV','MX-5','Premacy','RX-7','RX-8','Tribute'],
+    'Mercedes': ['A-class','AMG GT','AMG GT 4-Door','B-class','C-class','C-class Sport Coupe','CL-class','CLA-class','CLC-class','CLK-class','CLS-class','E-class','E-class Coupe','EQC','G-class','GL-class','GLA-class','GLB-class','GLC-class','GLC-class Coupe','GLE-class','GLE-class Coupe','GLK-class','GLS-class','M-class','R-class','S-class','S-class Cabrio','S-class Coupe','SL-class','SLK-class','SLR-class','SLS AMG','Sprinter','Vaneo','Viano','Vito','X-class'],
+    'Mitsubishi': ['3000 GT','ASX','Carisma','Colt','Dignity','Eclipse','Eclipse Cross','Endeavor','Galant','Grandis','i-MiEV','L200','Lancer','Lancer Evo','Mirage','Outlander','Outlander XL','Pajero','Pajero Pinin','Pajero Sport','Raider','Space Gear','Space Runner','Space Star'],
+    'Nissan': ['350Z','370Z','Almera','Almera Classic','Almera Tino','Altima','Armada','Bluebird Sylphy','GT-R','Juke','Leaf','Maxima','Micra','Murano','Navara','Note','NP300','Pathfinder','Patrol','Primera','Qashqai','Qashqai+2','Quest','Rogue','Sentra','Skyline','Sylphy','Teana','Terrano','Tiida','Titan','Titan XD','X-Trail','XTerra','Z'],
+    'Opel': ['Adam','Agila','Antara','Astra','Astra GTS','Cascada','Combo','Corsa','Corsa OPC','Crossland X','Frontera','Grandland X','Insignia','Insignia OPC','Karl','Meriva','Mokka','Omega','Signum','Speedster','Tigra','Vectra','Vivaro','Zafira','Zafira Tourer'],
+    'Peugeot': ['1007','107','108','2008','206','207','208','3008','301','307','308','4007','4008','406','407','408','5008','508','607','807','Boxer','Partner','RCZ Sport'],
+    'Renault': ['Arkana','Avantime','Captur','Clio','Duster','Duster Oroch','Espace','Fluence','Grand Scenic','Kadjar','Kangoo','Kaptur','Koleos','Laguna','Latitude','Logan','Master','Megane','Modus','Sandero','Sandero Stepway','Scenic','Symbol','Talisman','Trafic','Twingo','Twizy','Vel Satis','Wind','Zoe'],
+    'Skoda': ['Citigo','Fabia','Felicia','Kamiq','Karoq','Kodiaq','Octavia','Octavia Scout','Octavia Tour','Praktik','Rapid','Rapid Spaceback (NH1)','Roomster','Superb','Yeti'],
+    'Subaru': ['Ascent','Baja','Crosstrack','Exiga','Forester','Impreza','Justy','Legacy','Levorg','Outback','Traviq','Tribeca','WRX','XV'],
+    'Suzuki': ['Alto','Baleno','Celerio','Ciaz','Grand Vitara','Grand Vitara XL7','Ignis','Jimny','Kizashi','Liana','Splash','Swift','SX4','Vitara','Wagon R','Wagon R+'],
+    'Toyota': ['4Runner','Alphard','Auris','Avalon','Avensis','Avensis Verso','Aygo','C-HR','Caldina','Camry','Celica','Corolla','Corolla Verso','FJ Cruiser','Fortuner','GT 86','Hiace','Highlander','Hilux','iQ','ist','Land Cruiser','Land Cruiser Prado','Mark II','Mirai','MR2','Picnic','Previa','Prius','RAV4','Sequoia','Sienna','Supra','Tacoma','Tundra','Venza','Verso','Vitz','Yaris','Yaris Verso'],
+    'UAZ': ['Pickup'],
+    'VAZ': ['2101-2107','2108, 2109, 21099','2110, 2111, 2112','2113, 2114, 2115','4x4 Urban','Granta','Largus','Largus Cross','Vesta Cross','Vesta Sport','Vesta SW','XRay','XRay Cross'],
+    'Volkswagen': ['Amarok','Arteon','Beetle','Bora','Caddy','CC','Crafter','CrossGolf','CrossPolo','CrossTouran','Eos','Fox','Golf','Jetta','Lupo','Multivan','New Beetle','Passat','Passat CC','Phaeton','Pointer','Polo','Routan','Scirocco','Sharan','T-Roc','Teramont','Tiguan','Touareg','Touran','Transporter','Up'],
+    'Volvo': ['C30','C70','C70 Convertible','C70 Coupe','S40','S60','S70','S80','S90','V40','V50','V60','V70','V90','XC40','XC60','XC70','XC90']
+  };
+
   static List<Address> getAddresses() {
     var result = <Address>[];
     result.add(Address(country: 'Россия', region: 'Адыгея', city: 'Адыгейск', lat: '44.884856', lng: '39.190567'));
@@ -1310,4 +1338,7 @@ class DummyDataGenerator {
 
     return result;
   }
+
 }
+
+

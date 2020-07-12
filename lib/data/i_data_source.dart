@@ -20,6 +20,8 @@ abstract class IDataSource {
   Future<List<AutoService>> loadAutoServices({@required User user});
 
   Future<List<Address>> loadAddresses();
+
+  Future<Map<String, List<String>>> loadCarReferenceList();
 }
 
 enum DataSourceEvent { ALL_REFRESH, REQUESTS_REFRESH, MESSAGES_REFRESH }

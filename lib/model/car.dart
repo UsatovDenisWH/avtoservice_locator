@@ -33,7 +33,7 @@ class Car {
         'id': id,
         'mark': mark,
         'model': model,
-        'releaseDate': releaseDate.dateToString(),
+        'releaseDate': releaseDate.dateToStringForJson(),
         'vinCode': vinCode,
         'stateNumber': stateNumber,
         'odometer': odometer

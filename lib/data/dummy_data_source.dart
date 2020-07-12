@@ -12,8 +12,6 @@ class DummyDataSource implements IDataSource {
   bool isInitialized;
 
   List<Request> _requests;
-  List<AutoService> _autoServices;
-  List<Address> _addresses;
   final FimberLog _log = FimberLog('AvtoService Locator');
 
   @override
@@ -21,8 +19,6 @@ class DummyDataSource implements IDataSource {
     _log.d('DummyDataSource initialize() start');
     await Future<dynamic>.delayed(Duration(seconds: 2));
     _requests = DummyDataGenerator.generateRequests();
-    _autoServices = DummyDataGenerator.getAutoServices();
-    _addresses = DummyDataGenerator.getAddresses();
     _log.d('DummyDataSource initialize() end');
     return true;
   }
@@ -54,13 +50,20 @@ class DummyDataSource implements IDataSource {
   @override
   Future<List<AutoService>> loadAutoServices({@required User user}) async {
     await Future<dynamic>.delayed(Duration(milliseconds: 500));
-    return _autoServices;
+    return DummyDataGenerator.getAutoServices();
   }
 
   @override
   Future<List<Address>> loadAddresses() async {
     await Future<dynamic>.delayed(Duration(milliseconds: 500));
-    return _addresses;
+    return DummyDataGenerator.getAddresses();
+  }
+
+
+  @override
+  Future<Map<String, List<String>>> loadCarReferenceList() async {
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
+    return DummyDataGenerator.getCarReferenceList();
   }
 
   void _handleException(Exception error, StackTrace stackTrace) {
