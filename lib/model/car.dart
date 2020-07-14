@@ -33,11 +33,11 @@ class Car {
         'id': id,
         'mark': mark,
         'model': model,
-        'releaseDate': releaseDate.dateToStringForJson(),
+        'releaseDate': releaseDate.toStringForJson(),
         'vinCode': vinCode,
         'stateNumber': stateNumber,
         'odometer': odometer
       };
 
-  String getCarDescription() => '$mark $model (${releaseDate.year})';
+  String getCarDescription() => '$mark $model (${releaseDate?.year})';
 }

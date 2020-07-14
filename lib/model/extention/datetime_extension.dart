@@ -1,9 +1,9 @@
 extension DateTimeExtension on DateTime {
-  String dateToStringForJson() {
+  String toStringForJson() {
     return '$year${month < 10 ? 0 : ''}$month${day < 10 ? 0 : ''}$day';
   }
 
-  String dateToStringForHuman() {
+  String toStringForHuman() {
     String result;
     if (this == null) {
       result = null;
