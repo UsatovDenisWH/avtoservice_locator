@@ -188,5 +188,3 @@ class ProfileBloc extends BlocBase {
     _log.d('ProfileBloc dispose');
   }
 }
-
-enum ProfileListItem { USER_CARD, EMAIL, COUNTRY, REGION, CITY, CARS }

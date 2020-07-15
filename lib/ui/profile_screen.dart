@@ -46,7 +46,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     var userCard = InkWell(
-        onTap: () => _onTapListTile(item: ProfileListItem.USER_CARD),
+        onTap: () {
+          print('onTap: userCard');
+        },
         child: Container(
           height: 100,
           child: Row(
@@ -205,8 +207,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-
-  void _onTapListTile({@required ProfileListItem item}) {}
 
   void _showEditEmailDialog() {
     final TextEditingController _emailFieldController = TextEditingController();
@@ -406,7 +406,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 FlatButton(
                   child: Text('ДОБАВИТЬ АВТО'),
                   onPressed: () {
-                    _showAddCarsDialog(stateSetter: setDialogState);
+                    _showAddOrEditCarsDialog(stateSetter: setDialogState);
                   },
                 ),
                 FlatButton(
@@ -435,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           splashColor: Colors.blue[200],
           child: ListTile(
             onTap: () {
-              print('onTap:ListTile');
+              _showAddOrEditCarsDialog(stateSetter: stateSetter, car: element);
             },
             title: Text(element.getCarDescription()),
             subtitle: Text('Пробег: ${element.odometer} км'),
@@ -490,7 +490,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showAddCarsDialog({StateSetter stateSetter}) {
+  void _showAddOrEditCarsDialog({StateSetter stateSetter, Car car}) {
     String mark;
     String model;
     DateTime releaseDate;
@@ -498,17 +498,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String stateNumber;
     int odometer;
 
+    var releaseDateController = TextEditingController();
+//    var vinCodeController = TextEditingController();
+//    var stateNumberController = TextEditingController();
+//    var odometerController = TextEditingController();
+
+    var isEditMode = car != null;
+    if (isEditMode) {
+      mark = car.mark;
+      model = car.model;
+      releaseDate = car.releaseDate;
+      vinCode = car.vinCode;
+      stateNumber = car.stateNumber;
+      odometer = car.odometer;
+      _bloc.updateCarReferenceList(carMark: mark);
+      releaseDateController.text = releaseDate.toStringForHuman();
+    }
+
     final formKey = GlobalKey<FormState>();
     final releaseDateFocusNode = FocusNode();
     final vinCodeFocusNode = FocusNode();
     final stateNumberFocusNode = FocusNode();
     final odometerFocusNode = FocusNode();
     final addButtonFocusNode = FocusNode();
-
-    var releaseDateController = TextEditingController();
-//    var vinCodeController = TextEditingController();
-//    var stateNumberController = TextEditingController();
-//    var odometerController = TextEditingController();
+    final saveButtonFocusNode = FocusNode();
 
     showDialog<void>(
       context: context,
@@ -517,7 +530,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setDialogState) {
           return AlertDialog(
-            title: Text('Добавить авто:'),
+            title: isEditMode ? Text('Изменить авто:') : Text('Добавить авто:'),
             content: Container(
               height: 350,
 //              width: 400,
@@ -546,11 +559,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 //                          FocusScope.of(context).requestFocus(modelFocusNode);
                         },
                         validator: (String value) {
-                          if (value.isEmpty) {
+                          if (mark == null) {
                             return 'Укажите марку авто';
                           }
                           return null;
                         },
+                      ),
+                      SizedBox(
+                        height: 8,
                       ),
                       DropdownButtonFormField<String>(
                         hint: Text('*Модель'),
@@ -568,7 +584,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               .requestFocus(releaseDateFocusNode);
                         },
                         validator: (String value) {
-                          if (value == null || value.isEmpty) {
+                          if (model == null) {
                             return 'Укажите модель авто';
                           }
                           return null;
@@ -600,7 +616,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           }
                         },
                         validator: (String value) {
-                          if (value.isEmpty) {
+                          if (releaseDate == null) {
                             return 'Укажите дату выпуска';
                           }
                           return null;
@@ -608,6 +624,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       TextFormField(
                         decoration: InputDecoration(labelText: '*Пробег, км'),
+                        initialValue: odometer?.toString(),
                         focusNode: odometerFocusNode,
                         inputFormatters: [
                           WhitelistingTextInputFormatter.digitsOnly,
@@ -616,19 +633,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (String value) {
-                          odometer = int.parse(value);
                           FocusScope.of(context)
                               .requestFocus(stateNumberFocusNode);
                         },
                         validator: (String value) {
-                          if (value.isEmpty) {
+                          if (value.isNotEmpty && int.parse(value) > 0) {
+                            odometer = int.parse(value);
+                            return null;
+                          } else {
                             return 'Укажите пробег';
                           }
-                          return null;
                         },
                       ),
                       TextFormField(
                         decoration: InputDecoration(labelText: 'Гос. номер'),
+                        initialValue: stateNumber,
                         focusNode: stateNumberFocusNode,
                         inputFormatters: [
                           WhitelistingTextInputFormatter(RegExp(r'\w+'))
@@ -636,19 +655,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (String value) {
-                          stateNumber = value;
                           FocusScope.of(context).requestFocus(vinCodeFocusNode);
+                        },
+                        validator: (String value) {
+                          stateNumber = value;
+                          return null;
                         },
                       ),
                       TextFormField(
                         decoration: InputDecoration(labelText: 'VIN'),
+                        initialValue: vinCode,
                         focusNode: vinCodeFocusNode,
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (String value) {
+                          if (isEditMode)
+                            FocusScope.of(context)
+                                .requestFocus(saveButtonFocusNode);
+                          else
+                            FocusScope.of(context)
+                                .requestFocus(addButtonFocusNode);
+                        },
+                        validator: (String value) {
                           vinCode = value;
-                          FocusScope.of(context)
-                              .requestFocus(addButtonFocusNode);
+                          return null;
                         },
                       ),
                     ],
@@ -657,29 +687,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
-                child: Text('ДОБАВИТЬ'),
-                focusNode: addButtonFocusNode,
-                onPressed: () {
-                  if (formKey.currentState.validate()) {
-                    _bloc.addCar(
-                        mark: mark,
-                        model: model,
-                        releaseDate: releaseDate,
-                        vinCode: vinCode,
-                        stateNumber: stateNumber,
-                        odometer: odometer);
-                    _bloc.listCarModels = [];
-                    // update dialog window
-                    stateSetter(() {
-                      _carsItemsCount = _user.cars?.length ?? 1;
-                    });
-                    // update profile screen
-                    super.setState(() {});
-                    Navigator.of(dialogContext).pop();
-                  }
-                },
-              ),
+              if (isEditMode)
+                FlatButton(
+                  child: Text('СОХРАНИТЬ'),
+                  focusNode: saveButtonFocusNode,
+                  onPressed: () {
+                    if (formKey.currentState.validate()) {
+                      car.mark = mark;
+                      car.model = model;
+                      car.releaseDate = releaseDate;
+                      car.vinCode = vinCode;
+                      car.stateNumber = stateNumber;
+                      car.odometer = odometer;
+                      _bloc.saveProfile();
+                      _bloc.listCarModels = [];
+                      // update dialog window
+                      stateSetter(() {
+                        _carsItemsCount = _user.cars?.length ?? 1;
+                      });
+                      // update profile screen
+                      super.setState(() {});
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                )
+              else
+                FlatButton(
+                  child: Text('ДОБАВИТЬ'),
+                  focusNode: addButtonFocusNode,
+                  onPressed: () {
+                    if (formKey.currentState.validate()) {
+                      _bloc.addCar(
+                          mark: mark,
+                          model: model,
+                          releaseDate: releaseDate,
+                          vinCode: vinCode,
+                          stateNumber: stateNumber,
+                          odometer: odometer);
+                      _bloc.listCarModels = [];
+                      // update dialog window
+                      stateSetter(() {
+                        _carsItemsCount = _user.cars?.length ?? 1;
+                      });
+                      // update profile screen
+                      super.setState(() {});
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                ),
               FlatButton(
                 child: Text('ОТМЕНА'),
                 onPressed: () {
