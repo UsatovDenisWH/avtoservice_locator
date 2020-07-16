@@ -136,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )));
 
     var cars = InkWell(
-        onTap: _showEditCarsDialog,
+        onTap: _showListCarsDialog,
         child: Padding(
             padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
             child: ListTile(
@@ -384,15 +384,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showEditCarsDialog() {
+  void _showListCarsDialog() {
     showDialog<void>(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setDialogState) {
+            var allCarsCount = _user.cars?.length ?? 0;
             return AlertDialog(
-              title: Text('Автомобили'),
+              title: Text(
+                  'Автомобили${allCarsCount == 0 ? '' : ' ($allCarsCount)'}'),
               content: Container(
                   height: _carsItemsCount < 5 ? 75.00 * _carsItemsCount : 300,
                   width: 400,
