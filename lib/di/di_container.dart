@@ -39,7 +39,9 @@ class DiContainer {
   }
 
   static void _registerServices() {
-    _injector.map<IDataSource>((i) => DummyDataSource(), isSingleton: true);
+    _injector.map<IDataSource>(
+        (i) => DummyDataSource(streamService: i.get<StreamService>()),
+        isSingleton: true);
 
     _injector.map<CurrentUserService>(
         (i) => CurrentUserService(dataSource: i.get<IDataSource>()),
@@ -88,7 +90,8 @@ class DiContainer {
               bloc: RequestBloc(
                   screenBuilderService: i.get<ScreenBuilderService>(),
                   streamService: i.get<StreamService>(),
-                  repository: i.get<Repository>()),
+                  repository: i.get<Repository>(),
+                  currentUserService: i.get<CurrentUserService>()),
             ),
         isSingleton: true);
 

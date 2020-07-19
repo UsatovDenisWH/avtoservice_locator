@@ -4,13 +4,18 @@ import 'package:avtoservicelocator/model/address.dart';
 import 'package:avtoservicelocator/model/autoservice.dart';
 import 'package:avtoservicelocator/model/request.dart';
 import 'package:avtoservicelocator/model/user.dart';
+import 'package:avtoservicelocator/service/stream_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_fimber/flutter_fimber.dart';
 
 class DummyDataSource implements IDataSource {
+  DummyDataSource({@required StreamService streamService}) {
+    _inDataSourceEvent = streamService.changeInDataSource.sink;
+  }
+
   @override
   bool isInitialized;
-
+  Sink<DataSourceEvent> _inDataSourceEvent;
   List<Request> _requests;
   final FimberLog _log = FimberLog('AvtoService Locator');
 
@@ -42,6 +47,12 @@ class DummyDataSource implements IDataSource {
   }
 
   @override
+  Future<bool> addRequest({@required Request request}) async {
+    await Future<dynamic>.delayed(Duration(milliseconds: 500));
+    return true;
+  }
+
+  @override
   Future<List<Request>> loadRequests({@required User user}) async {
     await Future<dynamic>.delayed(Duration(milliseconds: 500));
     return _requests;
@@ -58,7 +69,6 @@ class DummyDataSource implements IDataSource {
     await Future<dynamic>.delayed(Duration(milliseconds: 500));
     return DummyDataGenerator.getAddresses();
   }
-
 
   @override
   Future<Map<String, List<String>>> loadCarReferenceList() async {

@@ -184,6 +184,17 @@ class Repository {
     onRefreshData(RefreshDataEvent.LIST_REQUEST);
   }
 
+  void addRequest({@required Request request}) {
+    _dataSource.addRequest(request: request);
+    var lastRequestNumber = _requests
+        .reduce(
+            (current, next) => current.number > next.number ? current : next)
+        .number;
+    request.number = lastRequestNumber + 1;
+    _requests.add(request);
+    onRefreshData(RefreshDataEvent.LIST_REQUEST);
+  }
+
   void dispose() {
     _log.d('Repository dispose');
   }
@@ -191,6 +202,4 @@ class Repository {
   void _handleException(Exception error, StackTrace stackTrace) {
     _log.d('Error in class Repository', ex: error, stacktrace: stackTrace);
   }
-
-
 }

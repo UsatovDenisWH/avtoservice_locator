@@ -94,30 +94,30 @@ class DummyDataGenerator {
           Proposal(autoService: _autoServices[1], price: 900),
           Proposal(autoService: _autoServices[2], price: 700)
         ]));
-    listRequest.add(Request(
-        date: DateTime.now(),
-        number: 123002,
-        status: RequestStatus.CANCEL,
-        car: _cars[0],
-        description: 'Ремонт автосигнализации',
-        dateRepair: DateTime.now(),
-        signYourParts: Random().nextBool(),
-        signNeedEvacuation: Random().nextBool()
-//        List<String> photos;
-//        List<Proposal> proposals;
-        ));
-    listRequest.add(Request(
-        date: DateTime.now(),
-        number: 123003,
-        status: RequestStatus.DONE,
-        car: _cars[0],
-        description: 'Замена фильтров: масла, воздушный, салонный.',
-        dateRepair: DateTime.now(),
-        signYourParts: Random().nextBool(),
-        signNeedEvacuation: Random().nextBool()
-//        List<String> photos;
-//        List<Proposal> proposals;
-        ));
+//    listRequest.add(Request(
+//        date: DateTime.now(),
+//        number: 123002,
+//        status: RequestStatus.CANCEL,
+//        car: _cars[0],
+//        description: 'Ремонт автосигнализации',
+//        dateRepair: DateTime.now(),
+//        signYourParts: Random().nextBool(),
+//        signNeedEvacuation: Random().nextBool()
+////        List<String> photos;
+////        List<Proposal> proposals;
+//        ));
+//    listRequest.add(Request(
+//        date: DateTime.now(),
+//        number: 123003,
+//        status: RequestStatus.DONE,
+//        car: _cars[0],
+//        description: 'Замена фильтров: масла, воздушный, салонный.',
+//        dateRepair: DateTime.now(),
+//        signYourParts: Random().nextBool(),
+//        signNeedEvacuation: Random().nextBool()
+////        List<String> photos;
+////        List<Proposal> proposals;
+//        ));
     listRequest.add(Request(
         date: DateTime.now(),
         number: 123004,
@@ -133,30 +133,30 @@ class DummyDataGenerator {
           Proposal(autoService: _autoServices[1], price: 1100),
           Proposal(autoService: _autoServices[0], price: 1500)
         ]));
-    listRequest.add(Request(
-        date: DateTime.now(),
-        number: 123005,
-        status: RequestStatus.CANCEL,
-        car: _cars[1],
-        description: 'Ремонт автосигнализации',
-        dateRepair: DateTime.now(),
-        signYourParts: Random().nextBool(),
-        signNeedEvacuation: Random().nextBool()
-//        List<String> photos;
-//        List<Proposal> proposals;
-        ));
-    listRequest.add(Request(
-        date: DateTime.now(),
-        number: 123006,
-        status: RequestStatus.DONE,
-        car: _cars[1],
-        description: 'Замена фильтров: масла, воздушный, салонный.',
-        dateRepair: DateTime.now(),
-        signYourParts: Random().nextBool(),
-        signNeedEvacuation: Random().nextBool()
-//        List<String> photos;
-//        List<Proposal> proposals;
-        ));
+//    listRequest.add(Request(
+//        date: DateTime.now(),
+//        number: 123005,
+//        status: RequestStatus.CANCEL,
+//        car: _cars[1],
+//        description: 'Ремонт автосигнализации',
+//        dateRepair: DateTime.now(),
+//        signYourParts: Random().nextBool(),
+//        signNeedEvacuation: Random().nextBool()
+////        List<String> photos;
+////        List<Proposal> proposals;
+//        ));
+//    listRequest.add(Request(
+//        date: DateTime.now(),
+//        number: 123006,
+//        status: RequestStatus.DONE,
+//        car: _cars[1],
+//        description: 'Замена фильтров: масла, воздушный, салонный.',
+//        dateRepair: DateTime.now(),
+//        signYourParts: Random().nextBool(),
+//        signNeedEvacuation: Random().nextBool()
+////        List<String> photos;
+////        List<Proposal> proposals;
+//        ));
 
     return listRequest;
   }
