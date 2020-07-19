@@ -82,8 +82,8 @@ class _LocationScreenState extends State<LocationScreen> {
         mapType: _currentMapType,
         markers: _markers,
       ),
-      Align(alignment: Alignment(-0.97, -0.925), child: buttonBack),
-      Align(alignment: Alignment(0.97, -0.925), child: buttonMapType),
+      Align(alignment: Alignment(-0.97, -0.91), child: buttonBack),
+      Align(alignment: Alignment(0.97, -0.91), child: buttonMapType),
     ]));
   }
 

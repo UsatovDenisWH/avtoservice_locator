@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:avtoservicelocator/bloc/common/bloc_provider.dart';
 import 'package:avtoservicelocator/bloc/profile_bloc.dart';
 import 'package:avtoservicelocator/model/car.dart';
@@ -46,9 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     var userCard = InkWell(
-        onTap: () {
-          print('onTap: userCard');
-        },
+        onTap: _showEditUserDialog,
         child: Container(
           height: 100,
           child: Row(
@@ -57,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: EdgeInsets.fromLTRB(24, 10, 24, 10),
                   child: CircleAvatar(
                     radius: 35,
-                    backgroundImage: AssetImage('assets/images/user.png'),
+                    backgroundImage: _bloc.getUserAvatar(),
                     backgroundColor: Colors.white38,
                   )),
               Column(
@@ -65,7 +66,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    _user.name ?? 'Имя не заполнено',
+                    _user.name == null || _user.name.isEmpty
+                        ? 'Имя не заполнено'
+                        : _user.name,
                     style: TextStyle(fontSize: 20),
                   ),
                   Text(
@@ -749,5 +752,130 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       },
     );
+  }
+
+  void _showEditUserDialog() async {
+    final formKey = GlobalKey<FormState>();
+//    final nameFocusNode = FocusNode();
+    final phoneFocusNode = FocusNode();
+    final okButtonFocusNode = FocusNode();
+
+    var result = await showDialog<String>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setDialogState) {
+            return AlertDialog(
+              title: Text('Пользователь:'),
+              content:
+                  /*Container(
+                  height: 300,
+                  width: 400,
+                  child:*/
+                  Form(
+                      key: formKey,
+                      autovalidate: true,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Stack(
+                              alignment: AlignmentDirectional.bottomEnd,
+                              children: <Widget>[
+                                CircleAvatar(
+                                  radius: 75,
+                                  backgroundImage: _bloc.getUserAvatar(),
+                                  backgroundColor: Colors.white38,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blue),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.add_a_photo,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      _bloc.getNewUserAvatar().then((result) {
+                                        if (result) {
+                                          setDialogState(() {});
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(labelText: 'Имя'),
+                              initialValue: _user.name,
+//                              focusNode: nameFocusNode,
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (String value) {
+                                FocusScope.of(context)
+                                    .requestFocus(phoneFocusNode);
+                              },
+                              validator: (String value) {
+                                _user.name = value;
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              decoration:
+                                  InputDecoration(labelText: '*Телефон'),
+                              initialValue: _user.phoneNumber.substring(2),
+                              focusNode: phoneFocusNode,
+                              inputFormatters: [
+                                WhitelistingTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(10)
+                              ],
+                              keyboardType: TextInputType.phone,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (String value) {
+                                FocusScope.of(context)
+                                    .requestFocus(okButtonFocusNode);
+                              },
+                              validator: (String value) {
+                                // patching bag of LengthLimitingTextInputFormatter(10)
+                                if (value.length > 10) {
+                                  value = value.substring(0, 10);
+                                }
+                                if (value.isNotEmpty && value.length == 10) {
+                                  _user.phoneNumber = '+7$value';
+                                  return null;
+                                } else {
+                                  return 'Введите 10 цифр';
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('ОК'),
+                  focusNode: okButtonFocusNode,
+                  onPressed: () {
+                    if (formKey.currentState.validate()) {
+                      _bloc.saveProfile();
+                      // update profile screen
+                      super.setState(() {});
+                      Navigator.of(context).pop('OK');
+                    }
+                  },
+                ),
+              ],
+            );
+          });
+        });
+
+    if (result != null && result == 'OK') {
+      print('Выход по OK');
+    } else {
+      print('Выход по другому');
+      _bloc.rollbackUserProfileChanges();
+    }
   }
 }

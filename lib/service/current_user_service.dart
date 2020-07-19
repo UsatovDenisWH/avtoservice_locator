@@ -56,6 +56,7 @@ class CurrentUserService {
           phoneNumber: _currentUser.phoneNumber,
           name: _currentUser.name,
           eMail: _currentUser.eMail,
+          avatar: _currentUser.avatar,
           country: _currentUser.country,
           region: _currentUser.region,
           city: _currentUser.city,

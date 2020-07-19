@@ -9,6 +9,7 @@ class User {
       @required this.phoneNumber,
       this.name,
       this.eMail,
+      this.avatar,
       this.country,
       this.region,
       this.city,
@@ -21,6 +22,7 @@ class User {
         phoneNumber = json['phoneNumber'] as String,
         name = json['name'] as String,
         eMail = json['eMail'] as String,
+        avatar = json['avatar'] as String,
         country = json['country'] as String,
         region = json['region'] as String,
         city = json['city'] as String,
@@ -32,6 +34,7 @@ class User {
   String phoneNumber;
   String name;
   String eMail;
+  String avatar;
   String country;
   String region;
   String city;
@@ -43,6 +46,7 @@ class User {
         'phoneNumber': phoneNumber,
         'name': name,
         'eMail': eMail,
+        'avatar': avatar,
         'country': country,
         'region': region,
         'city': city,
@@ -75,7 +79,8 @@ class User {
       return result;*/
       return Iterable<int>.generate(json.length)
           .toList()
-          .map((int index) => Car.fromJson(json['$index'] as Map<String, dynamic>))
+          .map((int index) =>
+              Car.fromJson(json['$index'] as Map<String, dynamic>))
           .toList();
     }
   }

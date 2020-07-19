@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:avtoservicelocator/bloc/common/base_bloc.dart';
 import 'package:avtoservicelocator/data/repository.dart';
 import 'package:avtoservicelocator/model/car.dart';
@@ -7,6 +9,7 @@ import 'package:avtoservicelocator/service/screen_builder_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fimber/flutter_fimber.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ProfileBloc extends BlocBase {
@@ -31,6 +34,7 @@ class ProfileBloc extends BlocBase {
   List<String> listCarMarks;
   List<String> listCarModels;
   Map<String, String> mapCities;
+  String _oldUserAvatar;
   BuildContext context;
   final int bottomNavigationBarIndex = 2;
   final FimberLog _log = FimberLog('AvtoService Locator');
@@ -181,6 +185,38 @@ class ProfileBloc extends BlocBase {
     currentUser.cars ??= [];
     currentUser.cars.add(newCar);
     saveProfile();
+  }
+
+  ImageProvider getUserAvatar() {
+    ImageProvider result;
+    if (currentUser.avatar == null || currentUser.avatar.isEmpty) {
+      result = AssetImage('assets/images/user.png');
+    } else {
+      result = MemoryImage(base64Decode(currentUser.avatar));
+    }
+    return result;
+  }
+
+  Future<bool> getNewUserAvatar() async {
+    bool result = false;
+
+    final pickedFile =
+        await ImagePicker().getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      var fileBytes = await pickedFile.readAsBytes();
+      String base64Image = base64Encode(fileBytes);
+      _oldUserAvatar = currentUser.avatar;
+      currentUser.avatar = base64Image;
+      result = true;
+    }
+    return result;
+  }
+
+  void rollbackUserProfileChanges() {
+    if (_oldUserAvatar != null) {
+      currentUser.avatar = _oldUserAvatar;
+      _oldUserAvatar = null;
+    }
   }
 
   @override

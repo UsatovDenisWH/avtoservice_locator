@@ -298,7 +298,7 @@ class _AutoserviceScreenState extends State<AutoserviceScreen> {
             feedbacksCarousel
           ],
         ),
-        Align(alignment: Alignment(-0.97, -0.925), child: buttonBack)
+        Align(alignment: Alignment(-0.97, -0.91), child: buttonBack)
       ],
     ));
   }
