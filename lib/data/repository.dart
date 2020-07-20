@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:avtoservicelocator/data/i_data_source.dart';
 import 'package:avtoservicelocator/model/address.dart';
 import 'package:avtoservicelocator/model/autoservice.dart';
@@ -34,6 +37,8 @@ class Repository {
   Sink<List<Request>> _inListRequests;
   Sink<List<AutoService>> _inListAutoServices;
 
+  Timer _jobEvery15sec;
+
   final FimberLog _log = FimberLog('AvtoService Locator');
 
   Future<bool> initialize() async {
@@ -64,10 +69,23 @@ class Repository {
     _addresses = await _dataSource.loadAddresses();
     _carReferenceList = await _dataSource.loadCarReferenceList();
 
+//    var job = JobService(repository: this);
+    _jobEvery15sec = Timer.periodic(Duration(seconds: 15), (timer) {
+      _log.d('_jobEvery15sec');
+      _addRandomProposals();
+    });
+
     _log.d(
         'Repository initRepository() _requests.length = ${_requests.length}');
     _log.d('Repository initRepository() end');
     return true;
+  }
+
+  void logoutCurrentUser() async {
+    _currentUserService.logoutCurrentUser();
+    _requests = await _dataSource.loadRequests(
+        user: _currentUserService.getCurrentUser());
+    _inListRequests.add(_requests);
   }
 
   Future<void> onChangeInDataSource(DataSourceEvent event) async {
@@ -186,20 +204,46 @@ class Repository {
 
   void addRequest({@required Request request}) {
     _dataSource.addRequest(request: request);
-    var lastRequestNumber = _requests
-        .reduce(
-            (current, next) => current.number > next.number ? current : next)
-        .number;
+    int lastRequestNumber;
+    if (_requests == null || _requests.isEmpty) {
+      lastRequestNumber = 0;
+    } else {
+      lastRequestNumber = _requests
+          .reduce(
+              (current, next) => current.number > next.number ? current : next)
+          .number;
+    }
     request.number = lastRequestNumber + 1;
     _requests.add(request);
     onRefreshData(RefreshDataEvent.LIST_REQUEST);
   }
 
+  void _addRandomProposals() {
+    var countServices = _autoServices.length;
+    if (_requests != null && _requests.isNotEmpty) {
+      _requests.forEach((request) {
+        request.proposals ??= [];
+        var countProposals = request.proposals.length;
+        if (request.status == RequestStatus.ACTIVE &&
+            countProposals < countServices) {
+          var autoService = _autoServices[countProposals];
+          var price = (Random().nextInt(15) + 5) * 100;
+          var randomProposal = Proposal(autoService: autoService, price: price);
+          request.proposals.add(randomProposal);
+          onRefreshData(RefreshDataEvent.LIST_REQUEST);
+        }
+      });
+    }
+  }
+
   void dispose() {
+    _jobEvery15sec.cancel();
     _log.d('Repository dispose');
   }
 
   void _handleException(Exception error, StackTrace stackTrace) {
     _log.d('Error in class Repository', ex: error, stacktrace: stackTrace);
   }
+
+
 }

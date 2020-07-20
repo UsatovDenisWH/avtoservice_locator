@@ -10,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
 
 class StreamService {
   StreamService() {
-    filterRequestItems = '';
+    filterRequestItems = 'ACTIVE';
     filterRequestId = '';
     filterAutoService = '';
     listRequests.listen(_convertRequestsToRequestItems);
@@ -76,15 +76,22 @@ class StreamService {
 
     if (filterRequestItems.isEmpty) {
       outRequestItems = inRequestItems;
-    } else {
+    } else if (filterRequestItems == 'ACTIVE') {
       outRequestItems = [];
       inRequestItems.forEach((item) {
-        if (item.descRequest
-            .toLowerCase()
-            .contains(filterRequestItems.toLowerCase())) {
+        if (item.status == RequestStatus.ACTIVE ||
+            item.status == RequestStatus.WORK) {
           outRequestItems.add(item);
         }
       });
+//      outRequestItems = [];
+//      inRequestItems.forEach((item) {
+//        if (item.descRequest
+//            .toLowerCase()
+//            .contains(filterRequestItems.toLowerCase())) {
+//          outRequestItems.add(item);
+//        }
+//      });
     }
     _log.d('StreamService _filterRequestItems(${outRequestItems.length})');
     return outRequestItems;

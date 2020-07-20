@@ -46,9 +46,24 @@ class Request {
     if (proposals == null || proposals.length == 0) {
       result.add('Ожидание предложений');
     } else {
-      result.add('${proposals.length} предложения');
+      result.add(counterProposalsToText());
       result.add(
           'от ${proposals.reduce((current, next) => current.price < next.price ? current : next).price} \u{20BD}');
+    }
+    return result;
+  }
+
+  String counterProposalsToText() {
+    var result = "";
+    var count = proposals.length;
+    if (count >= 11 && count <= 14) {
+      result = "$count предложений";
+    } else if (count % 10 == 1) {
+      result = "$count предложение";
+    } else if (count % 10 >= 2 && count % 10 <= 4) {
+      result = "$count предложения";
+    } else {
+      result = "$count предложений";
     }
     return result;
   }

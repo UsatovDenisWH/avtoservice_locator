@@ -34,13 +34,37 @@ class _RequestScreenState extends State<RequestScreen> {
             color: Colors.white,
           ),
           title: Text('Заявки'),
+          actions: <Widget>[
+            PopupMenuButton<SelectedFilterMenu>(
+              icon: Icon(Icons.sort),
+              onSelected: (SelectedFilterMenu result) {
+                _bloc.onSelectedFilterMenu(result);
+              },
+              itemBuilder: (BuildContext context) {
+                return <PopupMenuEntry<SelectedFilterMenu>>[
+                  PopupMenuItem<SelectedFilterMenu>(
+                    value: SelectedFilterMenu.ACTIVE,
+                    child: Text('Активные'),
+                  ),
+                  PopupMenuItem<SelectedFilterMenu>(
+                    value: SelectedFilterMenu.ALL,
+                    child: Text('Все заявки'),
+                  )
+                ];
+              },
+            ),
+          ],
         ),
         body: StreamBuilder(
           stream: _bloc.outRequestItems,
           builder: (BuildContext context,
               AsyncSnapshot<List<RequestItem>> snapshot) {
             if (snapshot.data == null || snapshot.data.isEmpty) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: Text(
+                'Заявок нет',
+                style: TextStyle(fontSize: 20, color: Colors.black38),
+              ));
             } else {
               return ListView.separated(
                   padding: EdgeInsets.all(0),
@@ -57,7 +81,9 @@ class _RequestScreenState extends State<RequestScreen> {
         ),
         bottomNavigationBar: _bottomNavigationBar(),
         floatingActionButton: FloatingActionButton(
-            onPressed: _showAddRequestDialog,
+            onPressed: _bloc.isPossibleAddRequest()
+                ? _showAddRequestDialog
+                : _showErrorDialog,
             child: Icon(
               Icons.add,
               size: 30,
@@ -87,6 +113,27 @@ class _RequestScreenState extends State<RequestScreen> {
           ),
         ],
       );
+
+  void _showErrorDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Сообщение:'),
+          content: Text('Сначала добавьте автомобиль в профиле пользователя.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showAddRequestDialog() async {
     Car car;
@@ -171,8 +218,8 @@ class _RequestScreenState extends State<RequestScreen> {
                                       cancelText: 'Отмена',
                                       initialDate: DateTime.now(),
                                       firstDate: DateTime.now(),
-                                      lastDate:
-                                          DateTime.now().add(Duration(days: 30)),
+                                      lastDate: DateTime.now()
+                                          .add(Duration(days: 30)),
                                       dateFormat: 'dd-MMMM-yyyy',
                                       locale: DateTimePickerLocale.ru,
                                       looping: true);

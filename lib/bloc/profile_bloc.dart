@@ -82,7 +82,7 @@ class ProfileBloc extends BlocBase {
   }
 
   void logoutUser() {
-    _currentUserService.logoutCurrentUser();
+    _repository.logoutCurrentUser();
     var nextScreen = _screenBuilderService.getLoginScreenBuilder();
     Navigator.pushAndRemoveUntil(
         context,

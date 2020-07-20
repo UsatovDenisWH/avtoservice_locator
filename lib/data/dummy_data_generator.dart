@@ -79,21 +79,21 @@ class DummyDataGenerator {
   static List<Request> generateRequests() {
     var listRequest = <Request>[];
 
-    listRequest.add(Request(
-        date: DateTime.now(),
-        number: 123001,
-        status: RequestStatus.ACTIVE,
-        car: _cars[0],
-        description: 'Замена масла',
-        dateRepair: DateTime.now(),
-        signYourParts: Random().nextBool(),
-        signNeedEvacuation: Random().nextBool(),
-//        List<String> photos;
-        proposals: [
-          Proposal(autoService: _autoServices[0], price: 600),
-          Proposal(autoService: _autoServices[1], price: 900),
-          Proposal(autoService: _autoServices[2], price: 700)
-        ]));
+//    listRequest.add(Request(
+//        date: DateTime.now(),
+//        number: 123001,
+//        status: RequestStatus.ACTIVE,
+//        car: _cars[0],
+//        description: 'Замена масла',
+//        dateRepair: DateTime.now(),
+//        signYourParts: Random().nextBool(),
+//        signNeedEvacuation: Random().nextBool(),
+////        List<String> photos;
+//        proposals: [
+//          Proposal(autoService: _autoServices[0], price: 600),
+//          Proposal(autoService: _autoServices[1], price: 900),
+//          Proposal(autoService: _autoServices[2], price: 700)
+//        ]));
 //    listRequest.add(Request(
 //        date: DateTime.now(),
 //        number: 123002,
@@ -118,21 +118,21 @@ class DummyDataGenerator {
 ////        List<String> photos;
 ////        List<Proposal> proposals;
 //        ));
-    listRequest.add(Request(
-        date: DateTime.now(),
-        number: 123004,
-        status: RequestStatus.ACTIVE,
-        car: _cars[1],
-        description: 'Замена масла',
-        dateRepair: DateTime.now(),
-        signYourParts: Random().nextBool(),
-        signNeedEvacuation: Random().nextBool(),
-//        List<String> photos;
-        proposals: [
-          Proposal(autoService: _autoServices[2], price: 1000),
-          Proposal(autoService: _autoServices[1], price: 1100),
-          Proposal(autoService: _autoServices[0], price: 1500)
-        ]));
+//    listRequest.add(Request(
+//        date: DateTime.now(),
+//        number: 123004,
+//        status: RequestStatus.ACTIVE,
+//        car: _cars[1],
+//        description: 'Замена масла',
+//        dateRepair: DateTime.now(),
+//        signYourParts: Random().nextBool(),
+//        signNeedEvacuation: Random().nextBool(),
+////        List<String> photos;
+//        proposals: [
+//          Proposal(autoService: _autoServices[2], price: 1000),
+//          Proposal(autoService: _autoServices[1], price: 1100),
+//          Proposal(autoService: _autoServices[0], price: 1500)
+//        ]));
 //    listRequest.add(Request(
 //        date: DateTime.now(),
 //        number: 123005,
@@ -245,7 +245,7 @@ class DummyDataGenerator {
     'Subaru': ['Ascent','Baja','Crosstrack','Exiga','Forester','Impreza','Justy','Legacy','Levorg','Outback','Traviq','Tribeca','WRX','XV'],
     'Suzuki': ['Alto','Baleno','Celerio','Ciaz','Grand Vitara','Grand Vitara XL7','Ignis','Jimny','Kizashi','Liana','Splash','Swift','SX4','Vitara','Wagon R','Wagon R+'],
     'Toyota': ['4Runner','Alphard','Auris','Avalon','Avensis','Avensis Verso','Aygo','C-HR','Caldina','Camry','Celica','Corolla','Corolla Verso','FJ Cruiser','Fortuner','GT 86','Hiace','Highlander','Hilux','iQ','ist','Land Cruiser','Land Cruiser Prado','Mark II','Mirai','MR2','Picnic','Previa','Prius','RAV4','Sequoia','Sienna','Supra','Tacoma','Tundra','Venza','Verso','Vitz','Yaris','Yaris Verso'],
-    'UAZ': ['Pickup'],
+    'UAZ': ['Patriot', 'Pickup'],
     'VAZ': ['2101-2107','2108, 2109, 21099','2110, 2111, 2112','2113, 2114, 2115','4x4 Urban','Granta','Largus','Largus Cross','Vesta Cross','Vesta Sport','Vesta SW','XRay','XRay Cross'],
     'Volkswagen': ['Amarok','Arteon','Beetle','Bora','Caddy','CC','Crafter','CrossGolf','CrossPolo','CrossTouran','Eos','Fox','Golf','Jetta','Lupo','Multivan','New Beetle','Passat','Passat CC','Phaeton','Pointer','Polo','Routan','Scirocco','Sharan','T-Roc','Teramont','Tiguan','Touareg','Touran','Transporter','Up'],
     'Volvo': ['C30','C70','C70 Convertible','C70 Coupe','S40','S60','S70','S80','S90','V40','V50','V60','V70','V90','XC40','XC60','XC70','XC90']
@@ -1335,7 +1335,6 @@ class DummyDataGenerator {
     result.add(Address(country: 'Россия', region: 'Ярославская область', city: 'Тутаев', lat: '57.8688', lng: '39.530759'));
     result.add(Address(country: 'Россия', region: 'Ярославская область', city: 'Углич', lat: '57.526592', lng: '38.319372'));
     result.add(Address(country: 'Россия', region: 'Ярославская область', city: 'Ярославль', lat: '57.626569', lng: '39.893787'));
-
     return result;
   }
 

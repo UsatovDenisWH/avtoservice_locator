@@ -58,6 +58,15 @@ class RequestBloc extends BlocBase {
     }
   }
 
+  void onSelectedFilterMenu(SelectedFilterMenu result) {
+    if (result == SelectedFilterMenu.ALL) {
+      _streamService.filterRequestItems = '';
+    } else if (result == SelectedFilterMenu.ACTIVE) {
+      _streamService.filterRequestItems = 'ACTIVE';
+    }
+    _repository.onRefreshData(RefreshDataEvent.LIST_REQUEST);
+  }
+
   void addRequest(
       {Car car,
       String description,
@@ -113,11 +122,24 @@ class RequestBloc extends BlocBase {
     return result;
   }
 
+  bool isPossibleAddRequest() {
+    var result = true;
+    if (currentUser.cars == null || currentUser.cars.isEmpty) {
+      result = false;
+//      var snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
+//      Scaffold.of(context).showSnackBar(snackBar);
+    }
+    return result;
+  }
+
   @override
   void dispose() {
     _streamService.filterRequestId = '';
     _log.d('RequestBloc dispose');
   }
+
 }
 
 enum SelectedItemMenu { CANCEL }
+
+enum SelectedFilterMenu { ACTIVE, ALL }

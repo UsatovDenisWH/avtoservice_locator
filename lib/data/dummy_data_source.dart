@@ -16,14 +16,14 @@ class DummyDataSource implements IDataSource {
   @override
   bool isInitialized;
   Sink<DataSourceEvent> _inDataSourceEvent;
-  List<Request> _requests;
+//  List<Request> _requests;
   final FimberLog _log = FimberLog('AvtoService Locator');
 
   @override
   Future<bool> initialize() async {
     _log.d('DummyDataSource initialize() start');
     await Future<dynamic>.delayed(Duration(seconds: 2));
-    _requests = DummyDataGenerator.generateRequests();
+//    _requests = DummyDataGenerator.generateRequests();
     _log.d('DummyDataSource initialize() end');
     return true;
   }
@@ -55,7 +55,8 @@ class DummyDataSource implements IDataSource {
   @override
   Future<List<Request>> loadRequests({@required User user}) async {
     await Future<dynamic>.delayed(Duration(milliseconds: 500));
-    return _requests;
+    return DummyDataGenerator.generateRequests();
+//    return _requests;
   }
 
   @override
