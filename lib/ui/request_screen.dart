@@ -15,14 +15,12 @@ class RequestScreen extends StatefulWidget {
 
 class _RequestScreenState extends State<RequestScreen> {
   RequestBloc _bloc;
-  AppBar _appBar;
 
   @override
   void initState() {
     super.initState();
     _bloc = BlocProvider.of(context);
     _bloc.context = context;
-//    _appBar = _defaultAppBar();
   }
 
   @override
@@ -44,12 +42,35 @@ class _RequestScreenState extends State<RequestScreen> {
                 return <PopupMenuEntry<SelectedFilterMenu>>[
                   PopupMenuItem<SelectedFilterMenu>(
                     value: SelectedFilterMenu.ACTIVE,
-                    child: Text('Активные'),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(child: Text('Активные')),
+                        if (_bloc.selectedFilterMenu ==
+                            SelectedFilterMenu.ACTIVE)
+                          Icon(
+                            Icons.done,
+                            color: Colors.black54,
+                          )
+                        else
+                          SizedBox.shrink(),
+                      ],
+                    ),
                   ),
                   PopupMenuItem<SelectedFilterMenu>(
                     value: SelectedFilterMenu.ALL,
-                    child: Text('Все заявки'),
-                  )
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(child: Text('Все заявки')),
+                        if (_bloc.selectedFilterMenu == SelectedFilterMenu.ALL)
+                          Icon(
+                            Icons.done,
+                            color: Colors.black54,
+                          )
+                        else
+                          SizedBox.shrink(),
+                      ],
+                    ),
+                  ),
                 ];
               },
             ),
@@ -305,69 +326,4 @@ class _RequestScreenState extends State<RequestScreen> {
 //      _bloc.rollbackUserProfileChanges();
     }
   }
-
-/*  AppBar _defaultAppBar() =>
-      AppBar(
-        leading: Builder(
-          builder: (BuildContext context) =>
-              IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  _setAppBar(action: AppBarAction.MENU);
-                  _bloc.onTapMenuButton();
-                },
-              ),
-        ),
-        title: Text(_currentUser.getFullName()),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              _setAppBar(action: AppBarAction.SEARCH);
-            },
-          ),
-        ],
-      );
-
-  AppBar _searchAppBar() =>
-      AppBar(
-        leading: Builder(
-          builder: (BuildContext context) =>
-              IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  _clearSearchQuery();
-                  _setAppBar(action: AppBarAction.NONE);
-                },
-              ),
-        ),
-        title: TextField(
-          controller: _searchQueryController,
-          autofocus: true,
-          enableInteractiveSelection: false,
-          decoration: InputDecoration(
-            hintText: "Search...",
-            border: InputBorder.none,
-            hintStyle: TextStyle(color: Colors.white70, fontSize: 20.0),
-          ),
-          style: TextStyle(color: Colors.white, fontSize: 20.0),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: _clearSearchQuery,
-          ),
-        ],
-      );
-
-  void _setAppBar({@required AppBarAction action}) {
-    setState(() {
-      if (action == AppBarAction.SEARCH) {
-        _appBar = _searchAppBar();
-      } else {
-        _appBar = _defaultAppBar();
-      }
-    });
-  }*/
-
 }

@@ -312,10 +312,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             hint: Text('Выберите регион'),
             value: result,
             elevation: 4,
-            items:
-                _bloc.listRegions.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(child: Text(value), value: value);
-            }).toList(),
+            items: _bloc.listRegions == null
+                ? null
+                : _bloc.listRegions
+                    .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                        child: Text(value), value: value);
+                  }).toList(),
             onChanged: (String value) {
               result = value;
             },
@@ -355,10 +358,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             hint: Text('Выберите город'),
             value: result,
             elevation: 4,
-            items: _bloc.mapCities.keys
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(child: Text(value), value: value);
-            }).toList(),
+            items: _bloc.mapCities == null
+                ? null
+                : _bloc.mapCities.keys
+                    .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                        child: Text(value), value: value);
+                  }).toList(),
             onChanged: (String value) {
               result = value;
             },

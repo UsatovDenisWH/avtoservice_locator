@@ -34,6 +34,7 @@ class RequestBloc extends BlocBase {
   Stream<List<RequestItem>> outRequestItems;
   BuildContext context;
   final int bottomNavigationBarIndex = 0;
+  SelectedFilterMenu selectedFilterMenu = SelectedFilterMenu.ACTIVE;
   final FimberLog _log = FimberLog('AvtoService Locator');
 
   void onTapRequestItem({RequestItem item}) {
@@ -61,8 +62,10 @@ class RequestBloc extends BlocBase {
   void onSelectedFilterMenu(SelectedFilterMenu result) {
     if (result == SelectedFilterMenu.ALL) {
       _streamService.filterRequestItems = '';
+      selectedFilterMenu = SelectedFilterMenu.ALL;
     } else if (result == SelectedFilterMenu.ACTIVE) {
       _streamService.filterRequestItems = 'ACTIVE';
+      selectedFilterMenu = SelectedFilterMenu.ACTIVE;
     }
     _repository.onRefreshData(RefreshDataEvent.LIST_REQUEST);
   }
@@ -137,7 +140,6 @@ class RequestBloc extends BlocBase {
     _streamService.filterRequestId = '';
     _log.d('RequestBloc dispose');
   }
-
 }
 
 enum SelectedItemMenu { CANCEL }
